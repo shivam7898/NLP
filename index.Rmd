@@ -1,5 +1,5 @@
 --- 
-title: "..."
+title: "Natural Language Processing"
 author: "Shivam Upadhyay"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -8,9 +8,9 @@ bibliography: [book.bib, packages.bib]
 description: |
   This is a minimal example.
 link-citations: yes
-url: 'https\://bookdown.org/shivam7898/...'
-github-repo: "shivam7898/..."
-subtitle: "..."
+url: 'https\://bookdown.org/shivam7898/NLP'
+github-repo: "shivam7898/NLP"
+subtitle: "R and Python"
 ---
 
 # About {#FIRST .unnumbered} 
@@ -21,7 +21,7 @@ The HTML File access MathJax via internet to render LaTeX Equations. Thus, equat
 
 ## Preface {.unnumbered}
 
-This repository contains my notes, codes, models, and output for ... ?
+This repository contains notes, codes, models, and output for Natural Language Processing (NLP) using R and Python.
 
 Proper reference to the original source may sometimes be lacking. This is regrettable and these references will be included in later versions.
 
