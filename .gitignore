@@ -1,1 +1,9 @@
 .Rhistory
+_bookdown_files/
+_book/
+.Rproj.user/
+_main.html
+_main.md
+_main.Rmd
+images/bigImages/
+docs/bigDocs/

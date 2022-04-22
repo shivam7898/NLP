@@ -1,0 +1,35 @@
+/* style.css copied by SetRProject.ps1 */
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+
+/* Table Caption Colour but NOT the Figure Caption Colour */
+caption {
+  color: teal;
+  font-weight: bold;
+  font-size: 1.0em;
+}
+
+/*NOTE: For all css modifications applicable to class.output, use all small case like "models"*/
+/* Stargazer, when printing only the Output, to match with 'zenburn' highlight */
+.models {
+  color: #80A080;
+  background-color: #303030;
+}
+
+/* Red background for chunks with Warnings */
+.redwarn {
+  background-color: #CF6679FF;
+}
+

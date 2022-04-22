@@ -1,0 +1,98 @@
+--- 
+title: "..."
+author: "Shivam Upadhyay"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+description: |
+  This is a minimal example.
+link-citations: yes
+url: 'https\://bookdown.org/shivam7898/...'
+github-repo: "shivam7898/..."
+subtitle: "..."
+---
+
+# About {#FIRST .unnumbered} 
+[Goto LAST](#LAST "End of the Document")
+
+\textcolor{pink}{Caution:}  
+The HTML File access MathJax via internet to render LaTeX Equations. Thus, equations will NOT be rendered properly if the file is viewed offline. Otherwise, the file is a standalone document containing all the relevant images, tables and codes to generate them.
+
+## Preface {.unnumbered}
+
+This repository contains my notes, codes, models, and output for ... ?
+
+Proper reference to the original source may sometimes be lacking. This is regrettable and these references will be included in later versions.
+
+The current status of the document is 'work-in-progress' as it is incomplete and it may contain inconsistencies and errors. 
+
+Shivam Upadhyay
+
+****
+
+
+## Environment {.unnumbered .tabset .tabset-fade}
+
+\textcolor{pink}{Assumption: Working directory has sub-folders named "data", "images", "code", "docs".}
+
+<!-- This is a comment. -->
+
+```{r '000A', include=FALSE, cache=FALSE}
+# #Knitr Setup, Packages, Functions. Each checks the environment and runs only once.
+sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
+sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
+sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
+```
+
+### R Version {.unlisted .unnumbered}
+
+```{r '000B-RVersion'}
+# #R Version
+R.version.string
+```  
+
+### Working Directory {.unlisted .unnumbered}
+
+```{r '000C-Directory'}
+# #Working Directory
+getwd()
+```
+
+### Session Info {.unlisted .unnumbered}
+
+```{r '000D-Session'}
+# #Version information about R, the OS and attached or loaded packages
+sessionInfo()
+``` 
+ 
+### Pandoc {.unlisted .unnumbered}
+
+```{r '000E-Pandoc'}
+# #Pandoc Version being used by RStudio
+rmarkdown::pandoc_version()
+```  
+
+```{r '000F-Bib', include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
+
+
+## Validation {.unlisted .unnumbered .tabset .tabset-fade}
+
+```{r '000X-Cleanup', include=FALSE, cache=FALSE}
+if(TRUE) f_rmExist(aa, bb, ii, jj, kk, ll)
+```
+
+```{r '000Z-Validation', include=TRUE, cache=FALSE}
+# #SUMMARISED Packages and Objects (BOOK CHECK)
+f_()
+#
+difftime(Sys.time(), q_start)
+```
+
+
+****

@@ -1,0 +1,9 @@
+delete_merged_file: false
+language:
+  ui:
+    chapter_name: "Chapter "
+  label:
+    fig: !expr function(x) sprintf("Figure %s ", x)
+    cnj: 'ERROR '
+rmd_subdir: ["pBasics", "zEnd"]
+# _bookdown.yml copied by SetRProject.ps1

@@ -1,0 +1,14 @@
+# END {#LAST .unnumbered}
+[Goto FIRST](#FIRST "Top of the Document")
+
+```{r '999-Show-Run-Time', cache=FALSE, include=TRUE}
+f_()
+#
+difftime(Sys.time(), q_start)
+#
+if(!identical(0L, length(q_all_chunk_times))) {
+  print(q_all_chunk_times[order(unlist(q_all_chunk_times), decreasing=TRUE)], digits = 2) 
+}
+```
+
+****
