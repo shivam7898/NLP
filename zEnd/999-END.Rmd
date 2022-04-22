@@ -1,7 +1,7 @@
 # END {#LAST .unnumbered}
 [Goto FIRST](#FIRST "Top of the Document")
 
-```{r '999-Show-Run-Time', cache=FALSE, include=TRUE}
+```{r '999-Show-Run-Time', include=FALSE, cache=FALSE}
 f_()
 #
 difftime(Sys.time(), q_start)

@@ -1,4 +1,4 @@
-# x {#p01}
+# NLP Basics {#p01}
 
 ```{r 'P01', include=FALSE, cache=FALSE}
 sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
@@ -8,9 +8,11 @@ sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
 
 ## Overview
 
-```{r 'P01-Test'}
-#
+
+```{r 'P01-Session'}
+sessionInfo()
 ```
+
 
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 

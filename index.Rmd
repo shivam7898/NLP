@@ -80,19 +80,17 @@ knitr::write_bib(c(
 ), 'packages.bib')
 ```
 
-
-## Validation {.unlisted .unnumbered .tabset .tabset-fade}
+<!-- ## Validation {.unlisted .unnumbered .tabset .tabset-fade} -->
 
 ```{r '000X-Cleanup', include=FALSE, cache=FALSE}
-if(TRUE) f_rmExist(aa, bb, ii, jj, kk, ll)
+if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll)
 ```
 
-```{r '000Z-Validation', include=TRUE, cache=FALSE}
+```{r '000Z-Validation', include=FALSE, cache=FALSE}
 # #SUMMARISED Packages and Objects (BOOK CHECK)
 f_()
 #
 difftime(Sys.time(), q_start)
 ```
-
 
 ****
