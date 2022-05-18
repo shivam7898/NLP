@@ -1,0 +1,414 @@
+# NLP Theory {#p99}
+
+```{r 'P99', include=FALSE, cache=FALSE}
+sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
+sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
+sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
+reticulate::source_python(here::here("code", "B01Modules.py"))
+```
+
+## Overview
+
+```{definition 'Data'}
+\textcolor{pink}{Data} are the facts and figures collected, analysed, and summarised for presentation and interpretation.
+```
+
+```{definition 'Data-Structured'}
+\textcolor{pink}{Structured data} is where you have some kind of a high level of organization. e.g. relational databases, spreadsheets etc. It depends on a \textcolor{pink}{data model} i.e. a model of data types and how they will be stored, accessed, and processed.
+```
+
+```{definition 'Data-Unstructured'}
+\textcolor{pink}{Unstructured data} does not come with the predefined data model. It can be images, videos, text and might be a combination of these.
+```
+
+
+```{definition 'Social-Media'}
+\textcolor{pink}{Social media} refers to a set of computer-network based tools that support social interaction between users. The term is often used to contrast with more traditional media such as television and books that deliver content to mass populations but do not facilitate the creation or sharing of content by users. Social media is about transforming \textcolor{pink}{broadcast} (one-to-many) into \textcolor{pink}{dialog} (many-to-many).
+```
+
+
+- A social media service can be effectively categorized by 6 key features
+  - Size of producer and consumer population
+    - Users are producers one moment and consumers the next. However, the differentiation is still important
+  - Pace of interaction
+    - Asynchronous systems like email or discussion forums presume a staccato pattern of interaction. 
+      - They are asynchronous, messages are labeled with an associated address or username, typically, with a single author, and other authors can reply to these messages and reply to other replies creating conversation "threads". 
+    - Synchronous systems, like chat require that partners interact at the same time. Although they require temporal coordination, they can create a richer environment for interaction as participants quickly react and adjust in near real time.
+  - Genre of basic elements - Text message, Webpage, Video etc.
+  - Control of basic elements
+    - Repeated interaction is perhaps the single most important factor in encouraging cooperation. If individuals are not likely to interact in the future, there is a huge temptation to behave selfishly. 
+  - Types of connections - undirected (Friendship), directed links (Follower)
+  - Retention of content
+    - Ironically, digital culture may have less durability than pre-digital culture.
+
+
+```{definition 'Network'}
+A \textcolor{pink}{network} is a collection of things and their relationships to one another. The \textcolor{pink}{'things'} that are connected are called nodes, vertices, or entities. The \textcolor{pink}{connections} between the vertices are called edges, ties, relationships or links.
+```
+
+
+```{definition 'Social-Networks'}
+A special subset of networks are \textcolor{pink}{social networks} which are created whenever people interact, directly or indirectly, with other people, institutions, and artifacts. 
+```
+
+
+```{definition 'Network-Analysis'}
+Using \textcolor{pink}{network analysis}, we can visualize complex sets of relationships as maps (i.e., graphs or sociograms) of connected symbols and calculate precise measures of the size, shape, and density of the network as a whole and the positions of each element and group of elements within it.
+```
+
+
+```{definition 'Social-Network-Analysis'}
+\textcolor{pink}{Social network analysis} is the application of the broader field of network science to the study of human relationships and connections. 
+```
+
+
+- We can use social network analysis to explore and visualize patterns found within collections of linked entities that include people.
+- \textcolor{pink}{Relationships} are the building blocks of the social world. Each set of relationships combine to create emergent patterns of connections among people, groups, and things. The focus of social network analysis is between, not within, people.
+- Network analysis shifts the focus of analysis to the bonds between individuals in addition to the internal qualities and abilities of individuals.
+  - This change in focus from attribute data to relational data dramatically affects how data are collected, represented, and analyzed. 
+  - Social network analysis complements methods that focus more narrowly on individuals, adding a critical dimension that captures the connective tissue of societies and other complex interconnections.
+  - The position or location of a person or 'node' or 'vertex' in relation to all the others is a primary concern of social network analysis. 
+    - Many network explanations look for causes of outcomes in the patterns of connections around an individual instead of their personal characteristics. 
+    - 'Know who' is often more important in network explanations than 'know how'. 
+    - Network approaches observe that different people in similar social positions often act in similar ways, even if they have different backgrounds. 
+    - Positions within networks may be as significant a factor as any aspect of the people who occupy them. Network analysis argues that explanations about the success or failures of organizations are often to be found in the structure of relationships that limit or provide opportunities for interaction.
+
+## Network Data Representation
+
+- Because network data differ from attribute data, a different way to represent it is used. 
+  - With attribute data, it is common to create a data matrix where each row represents an individual and each column represents their characteristics, behaviors, or answers to survey questions. 
+  - A modified approach is used to represent relational data. Like attribute matrices, each row represents an individual in the network. However, unlike attribute matrices, each column represents other individuals.
+    - Diagonal is generally zero because a person does not point to themselves
+    - Undirected network would be a symmetric matrix because the connection would be reciprocated
+
+- Network matrices are powerful forms of representation that lend themselves to efficient mathematical manipulation for those inclined. 
+  - However, they can also become quite large and challenging to navigate, particularly when networks are relatively "sparse" with few connections and many items.
+
+- An alternative to the matrix data format that is a more efficient representation of a network is called an \textcolor{pink}{edge list}. 
+  - It is simply a list of all edges in the network. 
+  - Individuals in the Vertex1 column "point to" those in the Vertex2 column. 
+  - Unless data describing the value of each edge are provided in additional columns, the network is implied to be a binary one (not weighted). 
+  - Edge lists are "efficient" in that they only record a row of data for each connection that does exist in a network, rather than store a "zero" for each possible connection that does not exist. 
+
+
+- The final method for representing networks is through \textcolor{pink}{network graphs}. 
+  - These show all the nodes and connections in a graphical representation.
+  - Network graphs can lead to insights that are hard to identify in tabular data, particularly when large networks are presented. 
+  - However, many network graphs require significant preparation to assure that they are readable.
+
+
+## Types of Networks
+
+- Egocentric, partial, and full networks
+  - It is often useful to consider social networks from an the point of view of an individual member.
+  - Network analysts call the individual that is the focus of attention \textcolor{pink}{'ego'} and the people they are connected to \textcolor{pink}{'alters'}. 
+  - Egocentric networks only include individuals who are connected to a specified ego. 
+  - More generally, egocentric networks can extend out any number of 'degrees' from an ego. 
+    - The basic '1-degree' ego network consists of the ego and their alters. 
+    - The '1.5-degree' ego network extends the 1-degree network by including connections between all of the alters. 
+    - The '2-degree' ego network extends the 1.5-degree network by including all of the alters of the alters (i.e., friends of friends), some of whom may not be connected to the ego. 
+    - These three sizes of ego networks allow you to look at increasingly larger, but still 'local' neighborhoods around a particular individual in a social network. 
+
+- A 'full' or 'complete' network contains the subset of people or entities who match some interest or attribute and includes information about the set of connections among them all. 
+  - All the 'egos' in a full network are treated equally, none is assumed to be the 'ego' of the network, although analysis of these networks will reveal that some people are more strategically located in the network than others. 
+  - Analysts create more selective sub-networks by selecting a sample or slice of the larger complete network.
+
+- Unimodal, multimodal, and affiliation networks
+  - Standard networks that connect the same type of entityare called \textcolor{pink}{unimodal networks} because they include one type (i.e., mode) of vertex. 
+  - They connect users to users or they connect documents to documents, but they do not include both users and documents. 
+  - However, networks can include different types of vertices creating \textcolor{pink}{multimodal networks}. 
+    - In many cases, these multimodal networks have to be transformed into simpler unimodal networks to perform meaningful network analysis, as most network metrics are designed for unimodal networks.
+  - A common type of multimodal network is a \textcolor{pink}{bimodal network} with exactly two types of vertices. 
+    - Data for these networks often include individuals and some event, activity, or content with which they are affiliated, creating an affiliation network. 
+    - For example, an affiliation network may connect users with the wiki pages they have edited. People are affiliated with pages. 
+    - In this network, no two users would directly connect to each other. 
+    - Likewise, no two pages would directly connect to each other. 
+    - Pages only link to people (i.e., editors). 
+    - Bimodal affiliation networks can be transformed into two separate unimodal networks: a 'user edits page' network can be converted into a user-to-user network and an page to page network. 
+    - The user-to-user network connects people based on their indirect links to one another through edits to a common page. For example, in a wiki co-edit affiliation network Derek and Marc would be strongly connected because they both edit many of the same wiki pages. 
+    - In contrast, a Page to Page network connects Pages based on the number of shared editors. For example, a pair of wiki pages would be closely connected if many people edited both of the pages. 
+    - More generally, this approach can be used to relate objects of all types (e.g., books, photos, and audio recordings) based on behavior of the users (e.g., purchasing or reading habits) and their preferences (e.g., ratings). 
+    - Affiliation networks are the raw material of many systems that recommend items of interest, such as 'Customers Who Bought This Item Also Bought' feature.
+
+## Network analysis Metrics
+
+```{definition 'Vertex-Edge'}
+\textcolor{pink}{Vertex count} is the number of entities in the network while the \textcolor{pink}{edge count} is the number of connections among them.
+```
+
+
+```{definition 'bridge-hole'}
+Some pairs of people are not directly connected. When a third person bridges a connection, we can think of that person as a broker, a \textcolor{pink}{'bridge'} or a 'connector'. When that person is missing, we can think of the gap as a \textcolor{pink}{'structural hole'}, a place in which there is a missing connector.
+```
+
+### Density
+
+```{definition 'Density'}
+\textcolor{pink}{Density} captures how connected a set of vertices are by calculating the percentage of connections that are observed from maximum possible count if everyone connected to everyone.
+```
+
+
+- \textcolor{pink}{Density} is an aggregate network metric used to describe the level of interconnectedness among a set of vertices. 
+  - Density is a count of the number of relationships observed to be present in a network divided by the total number of possible relationships that could be present. 
+  - It is a quantitative way to capture important sociological ideas like cohesion, solidarity, and membership.
+
+### Centrality
+
+- \textcolor{pink}{Centralization} is an aggregate metric that characterizes the amount to which the network is centered on one or just a few important nodes. 
+  - Centralized networks have many edges that emanate from a few important vertices, whereas decentralized networks have many vertices with many interconnections.
+  - Networks with high levels of centralization are likely to be more hierarchical, with a few people playing hub roles.
+
+- Studies typically show that people are connected to others who are similar to themselves on core attributes like income, education level, religious affiliation, and age.
+
+```{definition 'Centrality'}
+\textcolor{pink}{Centrality} measures capture how 'important' (central) a vertex is within the network based on some objective criteria. Some people sit at the edge or periphery of their networks, whereas others are firmly at the center, connected to many of the other most connected people. 
+```
+
+- \textcolor{pink}{Degree centrality} is a simple count of the total number of connections linked to a vertex. 
+  - It can be thought of as a kind of popularity measure, but a crude one that does not recognize a difference between quantity and quality. 
+  - It does not differentiate between a link to the CEO and a link to the most recent trainee. 
+  - Degree is the measure of the total number of edges connected to a particular vertex. 
+  - For directed networks where relationships have an origin and a destination rather than have mutual connections, there are two measures of degree: in-degree and out-degree. 
+    - \textcolor{pink}{In-degree} is the number of connections that point inward at a vertex. 
+    - \textcolor{pink}{Out-degree} is the number of connections that originate at a vertex and point outward to other vertices.
+
+- \textcolor{pink}{Betweenness centrality:} 
+  - The notion of connection paths is central to the study of networks. 
+  - Perhaps one of the most natural questions to ask about any two people in a network it is \textcolor{pink}{'How far apart are they'} 
+  - The distance between people who are not neighbors is measured by the smallest number of neighbor-to-neighbor hops from one to connect to the other. 
+    - For $A \to B \to C:$ C is at a distance 2 from A.
+  - The shortest path between two people is called the \textcolor{pink}{'geodesic distance'} and is used in many centrality metrics. 
+  - Betweenness centrality is a measure of how often a given vertex lies on the shortest path between two other vertices. 
+    - This can be thought of as a kind of 'bridge' score, a measure of how much removing a person would disrupt the connections between other people in the network. 
+    - A \textcolor{pink}{'structural hole'} is a term for recognizing a missing bridge. 
+    - Individuals who bridge structural holes within their organizations are promoted faster than others.
+
+- \textcolor{pink}{Closeness centrality:} 
+  - Closeness centrality measures position of each individual in the network via a different perspective from the other network metrics, capturing the average distance between each vertex and every other vertex in the network. 
+  - Assuming that vertices can only pass messages to or influence their existing connections, a low closeness centrality means that a person is directly connected or 'just a hop away' from most others in the network. 
+  - In contrast, vertices in very peripheral locations may have high closeness centrality scores, indicating the high number of hops or connections they need to take to connect to distant others in the network. 
+  - Think of closeness, paradoxically, as a 'distance' score. People with high 'closeness' centrality scores have many personal connections that they must travel to reach many other people in the network. 
+
+- \textcolor{pink}{Eigenvector centrality:}
+  - Eigenvector centrality is a more sophisticated view of centrality: a person with few connections could have a very high eigenvector centrality if those few connections were to very well-connected others.
+    - Eigenvector centrality allows for connections to have a variable value, so that connecting to some vertices has more benefit than connecting to others. 
+    - The PageRank algorithm used by Google is a variant of Eigenvector Centrality, primarily used for directed networks. 
+
+- \textcolor{pink}{Clustering coefficient:} 
+  - The clustering coefficient metric differs from measures of centrality. It is more akin to the density metric for whole networks, but focused on egocentric networks. 
+  - Specifically, the clustering coefficient is a measure of the density of the 1.5-degree egocentric network for each vertex. 
+  - When these connections are dense, the clustering coefficient is high. 
+  - If your 'friends' (alters) all know each other, you have a high clustering coefficient. 
+  - If your 'friends' (alters) do not know each other, then you have a low clustering coefficient. 
+  - People have different measures for their clustering coefficient depending on the ways they cultivate connections to others and the environments they are in.
+
+## Groups and Clusters
+
+- In a network perspective, people maintain many relationships and are potentially members in many loosely defined groups and clusters. 
+- From a network perspective, a \textcolor{pink}{group} is a collection of vertices. 
+- Relatively more cohesive or densely connected sets of vertices form regions, also called \textcolor{pink}{clusters}, that may reflect the existence of groups.
+
+- Two people within a network may sometimes share a pattern of connection to other people, even if they do not connect to the same people. These secondary patterns of connection are a distinctive feature of network analysis approaches: networks are as much about the attributes and patterns of connection among neighbors as they are about the attributes and connections of any individual.
+
+
+## Extract data from Twitter
+
+"ForLater"
+
+## Apr-17
+
+- Social Media Analytics
+  - Relationships
+    - Standing relationships: by virtue of membership in a family or other social group 
+      - You follow twitter account of a famous person
+    - Ad hoc relationships: by virtue of your actions or activities
+      - You like a tweet of a famous person
+  - Media - Opportunities to create and exchange content
+    - It is participatory, conversational and relationship oriented
+  - Analytics
+    - Information resulting from the systematic analysis of data or statistics
+    - informative and insightful product
+- Forms
+  - Descriptive - What happened
+  - Diagnostic - Why it happened
+  - Predictive - What will happen
+  - Prescriptive - What should be done
+
+- Big Data
+  - volume, velocity, variety, and veracity (relevance, quality)
+
+- Nodes and Ties
+
+
+## Apr-24
+
+- Relation is not the same thing as tie!
+
+- Peripheral Nodes
+
+- isolated, dyad, triad, 
+
+- Connected Components
+  - Separated from the rest of a Network
+
+- Information broker, boundary spanner
+  - connects disconnected components- connects internal ones (Information broker), connects external ones (boundary spanner)
+  
+- What factors account for tie formation
+  - Propinquity (physical proximity)
+  - Homophily - Preference towards those similar to themselves
+    - Induced - Group composition produce homophily
+    - Choice - People seek others similar to themselves, irrespective of their groups
+  - Transitivity: A to B, A to C : overtime B to C
+
+- Social Network Types: Based on Ties - Slide 12
+  - Directed
+  - Undirected
+  - reciprocated
+  - unreciprocated
+  
+- Number of entities
+  - one mode
+  - two mode - actors and events - slide 17 16:20
+  
+- Is group a network - 16:30 slide 19
+  - Group is one way of developing network ties
+
+- Representation - Matrix, Edge Lists, Sociogram (Network Graph)
+
+- Matrix - 16:35 slide 21 - check details - 16:40
+  - Adjacency Matrix
+  - Affilition Matrix
+    - Group to Group
+
+
+- Topologies
+  - Star or Wheel
+  - Y
+  - Line or Chain
+  - Circle
+  - Fully Connected
+
+- What does the colour signify - 16:48 
+  - Later
+
+- Which topology provides most satisfaction 
+  - cannot be fully-connected- information overload
+  - no star - someone else is controlling information flow to you
+  - circle - 
+
+- 16:50 For the simple communication task, fewest messages and least amount of time to complete, most efficient topologies will be ...
+  - "ForLater" two of five - Star & 
+
+- Break 16:55 - 17:10
+
+- Two demos
+
+17:55
+
+- Ego Metrics
+  - Centrality: Connectedness 34 : Ego to Ego
+    - Degree
+    - Betweenness
+    - Closeness
+    - Eigen-vector
+  - Clustering Coefficient: Structural equivalence: Ego having similar ties
+
+- Krackhardt Kite - K Network
+
+  
+
+## May-14
+
+- 18:35 - 0000
+
+
+- Question: Why Node A has the same eigenvector centrality as Node D
+  - D has fewer connections but is connected to A i.e. its connections are well-connected
+- Question: What is the meaning of combination of High Degree and Low eigenvector centrality scores
+  - High quantity but low quality (influence) i.e. the connections might be isolated
+
+
+- Clustering Coefficient
+  - Relates to the proportion of ties that are also tied to each other
+  - i.e. percentage of alters connected to each other
+  - when all of your friends are friends themselves, then clustering coefficient is 1 - A, F
+  - How to calculate: For C
+    - Degree "D" of the node = 5 {CA, CB, CD, CG, CH}
+    - Number of links between the neighbours of the node = 5 {AB, AD, BD, DG, GH}
+    - Formula
+
+- Edge Metrics
+  - Edge Weight
+    - Number of edges from A to B
+    - Strength
+    - Frequency
+  - Edge Type
+    - Nature of connection
+  - Edge Reciprocity
+
+- Graph Metrics
+  - Indicators of properties of a given network
+  - Connected Components
+    - Single or multiple nodes which are isolated /disconnected from the rest of the network
+    - As the number increases, it becomes easier to break the network
+  - Geodesic Distance
+    - Shortest path between Two Nodes
+    - Diameter: Maximum geodesic distance 
+    - Communication efficiency: Fewer the hops involved, faster the information moves
+  - Density
+    - The proportion of all possible ties that exist i.e. actual ties / possible ties
+    - Possible Ties - n is the number of nodes
+      - Undirected : $\frac{n!}{(n-2)!}$
+      - Directed : $\frac{n!}{2 \times(n-2)!}$
+  - Modularity (Not applicable to sub-graph)
+    - The extent to which the network contains modules (groups) \textcolor{pink}{within} which dense connections occur but \textcolor{pink}{across} which connections are sparse
+  - Centralisation
+    - How central the most central node is.
+    - Node XL does not provide this.
+  - Clustering Coefficient
+    - Colustering coefficient - Some correction 19:41 12
+    
+- KM Network 1 - Data at Week 1
+
+- How to generate Metrics
+
+- Analysis | Graph Metrics | OVerall Graph Metrics | Calculate Metrics
+
+- Remove Duplicates
+  - Prepare Data | Count and Merge Duplicate Edges
+
+- A: 3 Men with Diploma & 3 Women with Degree
+- B: 2 Men & 1 Women with Diploma, 1 Men & 2 Women with Degree
+- Diversity Perspective
+  - Alike because overall 3 Men - 3 Women & 3 Diploma - 3 Degree
+- Faultline Perspective
+  - Not unlike because distribution is different
+
+
+- Analysis | Groups | Group by vertex attribute | 
+  - Graph Metrics | Group Metrics | Calculate Metrics
+
+
+
+## May-15
+
+- 15:45 - Group by connected components
+- Group by cluster
+
+- Sub-group analysis - 16:20 29
+
+## Validation {#val-p99 .unlisted .unnumbered .tabset .tabset-fade}
+
+```{r 'P99-Cleanup', include=FALSE, cache=FALSE}
+if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll)
+```
+
+```{r 'P99-Validation', include=FALSE, cache=FALSE}
+# #SUMMARISED Packages and Objects (BOOK CHECK)
+f_()
+#
+difftime(Sys.time(), q_start)
+```
+
+****

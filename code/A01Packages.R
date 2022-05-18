@@ -2,8 +2,9 @@
 
 if (!("conflicted" %in% (.packages()))) {
   pkg <- character(0)
-  pkg <- c(pkg, "conflicted", "here", "knitr")
-  #pkg <- c(pkg, "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr")
+  pkg <- c(pkg, "conflicted", "here", "knitr", "reticulate")
+  pkg <- c(pkg, "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr")
+  pkg <- c(pkg, "igraph", "httr", "jsonlite")
   #pkg <- c(pkg, "kableExtra", "readxl", "latex2exp", "e1071", "lubridate", "car", "zoo", "forcats")
   #pkg <- c(pkg, "data.table", "gifski", "nycflights13", "gapminder", "Lahman", "nortest")
   #pkg <- c(pkg, "mice", "VIM", "qcc", "ggpmisc", "microbenchmark", "GGally", "corrplot")
@@ -15,8 +16,8 @@ if (!("conflicted" %in% (.packages()))) {
   #pkg <- c(pkg, "lobstr")
   lapply(pkg, FUN = function(x) {suppressMessages(library(x, character.only = TRUE))})
   #lapply(pkg, FUN = function(x) {library(x, character.only = TRUE)})
-#
-# #Precedence
+  #
+  # #Precedence
   # # dplyr::filter | stats::filter
   #invisible(suppressMessages(conflict_prefer("filter", "dplyr")))
   ## # dplyr::between | data.table::between
@@ -43,6 +44,8 @@ if (!("conflicted" %in% (.packages()))) {
   #invisible(suppressMessages(conflict_prefer("weather", "rattle")))  
   ## # stats::chisq.test | janitor::chisq.test
   #invisible(suppressMessages(conflict_prefer("chisq.test", "stats")))  
-# #Cleanup
+  # #Cleanup
   rm(pkg)
+  # #Provide the path to the specific Python binary.
+  use_python("C:\\Softwares\\Python\\Python310\\python.exe", required = TRUE)
 } else print("Packages not loaded again.")

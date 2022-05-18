@@ -1,48 +1,8 @@
-# #(.Rprofile) [3/3] =============================================================================#
-# #This file is Not auto-executed. It is sourced by [2/3] & runs on Restart by "^+F10" "AHK F5"
-# [1] Location: Sys.getenv("HOME")
-# [2] Location: "D:/Analytics/R"
-# [3] Location: Working Directory
-# Project specific .Rprofile under GIT management
+# #[2] Dot "./.Rprofile" #NO Auto-Execution, sourced and run by [1] on Restart by "^+F10" "AHK F5"#
+
+# [1] Tilde: Sys.getenv("HOME")
+# [2] Dot  : Working Directory - Project specific .Rprofile under GIT management
 # This file is copied by SetRProject.ps1 from D:\Analytics\PowerShell\RFiles
-
-# #(.Rrofile) [1/3] Sys.getenv("HOME") ".../Documents" ===========================================#
-# #This File is Auto-executed on Start-up & on Restart i.e. "^+F10" "AHK F5"
-# #This is kept in USER HOME and changed only when USER is changed.
-
-# #To change the working directory (To Analytics)
-#setwd("D:/Analytics/R")
-
-# #Execute the .Rprofile [2/3] (No Auto-execution)
-#source(".Rprofile")
-#=================================================================================================#
-# #(.Rrofile) [2/3] "D:/Analytics/R" =============================================================#
-# #This file is Not auto-executed. It is sourced by [1/3] & runs on Restart by "^+F10" "AHK F5"
-# #Modify Library Path
-# #Note that only directories that exist at the time will be included.
-# #[2/3] needs modified libPaths for accessing ALL Packages during New Startup. However...
-# #Any change in libPaths here [2/3] gets overwritten later if another .Rprofile [3/3] is executed
-# #So, these changes are repeated also in [3/3]
-#if (!identical(.libPaths()[1], "C:/Softwares/R/LibFiles")) {
-#  .libPaths( c( "C:/Softwares/R/LibFiles", .libPaths()) )
-#}
-
-# #To Point to the Latest Project as working directory
-#loc <- trimws(readLines("./../WorkingDirectory.txt", n = 1))
-#if(file.exists(loc)) {
-#    setwd(loc) 
-#    rm(loc)
-#    # #Execute the .Rprofile [3/3] (No Auto-execution)
-#    if (file.exists(".Rprofile")) {
-#        source(".Rprofile")
-#    } else {
-#        message("'.Rprofile' does not exist in Directory: ", getwd())
-#    }
-#} else {
-#    message("Check 'WorkingDirectory.txt', Target Directory does not exist: ", loc)
-#    rm(loc)
-#}
-#=================================================================================================#
 
 # #Set a CRAN mirror. Change the Target URL to the one having 'https' to avoid warnings.
 local({r <- getOption("repos")
@@ -51,9 +11,8 @@ local({r <- getOption("repos")
 
 # #Modify Library Path
 # #Note that only directories that exist at the time will be included.
-# #[2/3] needs modified libPaths for accessing ALL Packages during New Startup. However...
-# #Any change in libPaths here [2/3] gets overwritten later if another .Rprofile [3/3] is executed
-# #So, these changes are repeated also in [3/3]
+# #It needs modified libPaths for accessing ALL Packages during New Startup. However...
+# #Any change in libPaths at [1] earlier gets overwritten here [2]
 if (!identical(.libPaths()[1], "C:/Softwares/R/LibFiles")) {
   .libPaths( c( "C:/Softwares/R/LibFiles", .libPaths()) )
 }

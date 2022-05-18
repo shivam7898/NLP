@@ -3,8 +3,9 @@
 if (!("q_start" %in% ls(envir = .GlobalEnv))) {
   # #Compile Start Time 
   q_start <- Sys.time()
-  knitr::opts_chunk$set(include = TRUE, echo = TRUE, eval = TRUE, collapse = TRUE,
-                        dev.args = list(png = list(type = "cairo")), dpi = 300,
+  knitr::opts_chunk$set(echo = TRUE, include = TRUE, eval = TRUE, 
+						collapse = TRUE,
+						width = 100,
                         opts.label = 'twofig',
                         message = FALSE, warning = FALSE, error = FALSE, 
                         progress = FALSE, verbose = FALSE)			
@@ -29,12 +30,17 @@ if (!("q_start" %in% ls(envir = .GlobalEnv))) {
   knitr::opts_chunk$set(chunk_run_time = TRUE)
 
   # #Chunk Templates, use as: opts.label='twofig'
-  knitr::opts_template$set(twofig = list(fig.show = "hold", fig.align = 'center', 
-                                         out.width = "49%", fig.asp = 0.8, fig.width = 7))
+  knitr::opts_template$set(twofig = list(
+					fig.show = "hold", fig.align = 'center', out.width = "49%"))
 
-  # #Max Resolution plots for ggsave()
-  q_width <- 14
-  q_height <- {9/16} * q_width
+  # The Standard, Wider, and Higher Plot Sizes
+  q_png_h <- 7
+  q_png_w  <- 7
+  q_png_w_w <- 2 * q_png_w
+  q_png_w_h <- {9/16} * q_png_w_w
+  q_png_h_h <- {3/4} * 2 * q_png_h
+  q_png_h_w <- 2 * q_png_w
+  q_dpi <- q_dpi_w <- q_dpi_h <- 300
 
   # #Save Definitions and Theorems for Glossary
   q_def = list()
