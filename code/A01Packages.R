@@ -1,11 +1,12 @@
 # # source(here::here("code", "A01Packages.R")) ==================================================#
 
 if (!("conflicted" %in% (.packages()))) {
+  if(FALSE) install.packages("conflicted", dependencies = TRUE)
   pkg <- character(0)
   pkg <- c(pkg, "conflicted", "here", "knitr", "reticulate")
   pkg <- c(pkg, "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr")
   pkg <- c(pkg, "igraph", "httr", "jsonlite")
-  #pkg <- c(pkg, "kableExtra", "readxl", "latex2exp", "e1071", "lubridate", "car", "zoo", "forcats")
+  pkg <- c(pkg, "kableExtra", "readxl", "latex2exp", "e1071", "lubridate", "car", "zoo", "forcats")
   #pkg <- c(pkg, "data.table", "gifski", "nycflights13", "gapminder", "Lahman", "nortest")
   #pkg <- c(pkg, "mice", "VIM", "qcc", "ggpmisc", "microbenchmark", "GGally", "corrplot")
   #pkg <- c(pkg, "compiler", "viridisLite", "scales", "psych", "fastDummies", "RColorBrewer")

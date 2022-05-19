@@ -7,13 +7,217 @@ sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
 reticulate::source_python(here::here("code", "B01Modules.py"))
 ```
 
-## Overview
+## Data: Krackhardt Kite {#kite-p01 .tabset .tabset-fade}
+
+### Glance {.unlisted .unnumbered}
+
+\textcolor{pink}{Please import the "P01-KM-Week1.xlsx" and "P01-KM-Week4.xlsx"}
+
+- About: 18 Edges and 10 Vertices
+
+```{r 'P01-CSV-Kite', include=FALSE}
+loc_src <- here("data", "P01-Kite.csv")
+loc_rds <- here("data", "P01-Kite.rds")
+if(FALSE | !file.exists(loc_rds)) {
+  # #Read Adjacency Matrix from CSV
+  aa <- read_csv(loc_src, show_col_types = FALSE)
+  # #Columns To RowNames | Named Matrix |
+  aa <- aa |> 
+    column_to_rownames(var = "Nodes") |> 
+    as.matrix.data.frame(rownames.force = TRUE)
+  # #Save
+  p01kite <- aa
+  saveRDS(p01kite, loc_rds)
+} else { 
+  p01kite <- aa <- readRDS(loc_rds)
+}
+```
+
+```{r 'P01-Structure-Kite'}
+str(p01kite)
+```
+
+### Import {.unlisted .unnumbered}
+
+```{r 'P01-CSV-Kite-A', eval=FALSE, ref.label=c('P01-CSV-Kite')}
+# #Ref another file chunk
+```
+
+
+## Data: KM Network {#km-p01 .tabset .tabset-fade}
+
+### Glance {.unlisted .unnumbered}
+
+\textcolor{pink}{Please import the "P01-KM-Week1.xlsx" and "P01-KM-Week4.xlsx"}
+
+- About: Edges and Vertices of a Class Network at Week 1 and Week 4
+
+```{r 'P01-XL-KM-1', include=FALSE}
+loc_src <- here("data", "P01-KM-Week1.xlsx")
+loc_rds <- here("data", "P01-KM-Week1.rds")
+if(FALSE | !file.exists(loc_rds)) {
+  names_aa <- c("Edges", "Vertices")
+  # #Verify Excel
+  stopifnot(identical(excel_sheets(loc_src), names_aa))
+  # #Empty Named List
+  aa <- setNames(vector("list", length(names_aa)), nm = names_aa)
+  # #Read Excel Sheets
+  aa$Edges    <- read_excel(path = loc_src, sheet = "Edges")
+  aa$Vertices <- read_excel(path = loc_src, sheet = "Vertices")
+  #
+  # #Clean Edges
+  names_bb <- c("Node_1", "Node_2", "Recognition", "Friendship")
+  # #Rename | To Factor |
+  bb <- aa$Edges |> rename_with(make.names) |> 
+    rename_with(~ tolower(gsub(".", "_", .x, fixed = TRUE))) |> 
+    mutate(across(starts_with("vertex_"), factor)) |> 
+    mutate(across(c(recognition, friendship), factor, levels = c(0, 1), labels = c("No", "Yes")))
+  # #Rename
+  names(bb) <- names_bb
+  aa$Edges <- bb
+  #
+  # #Clean Vertices
+  names_bb <- c("Node", "Gender", "Status", "ACCT", "IE", "MS_MIS", "MBA", "Group", "Major")
+  # #Rename | Replace NA | Replace x | To Factor |
+  bb <- aa$Vertices |> rename_with(make.names) |> 
+    rename_with(~ tolower(gsub(".", "_", .x, fixed = TRUE))) |> 
+    mutate(across(c(acct, ie, ms_mis, mba), ~ replace_na(., "No"))) |> 
+    mutate(across(c(acct, ie, ms_mis, mba), ~gsub("x", "Yes", .))) |> 
+    mutate(across(where(is.character), factor))
+  # #Rename
+  names(bb) <- names_bb
+  aa$Vertices <- bb
+  #
+  # #Save
+  p01km_1 <- aa
+  saveRDS(p01km_1, loc_rds)
+} else { 
+  p01km_1 <- aa <- readRDS(loc_rds)
+}
+```
+
+
+```{r 'P01-XL-KM-4', include=FALSE}
+loc_src <- here("data", "P01-KM-Week4.xlsx")
+loc_rds <- here("data", "P01-KM-Week4.rds")
+if(FALSE | !file.exists(loc_rds)) {
+  names_aa <- c("Edges", "Vertices")
+  # #Verify Excel
+  stopifnot(identical(excel_sheets(loc_src), names_aa))
+  # #Empty Named List
+  aa <- setNames(vector("list", length(names_aa)), nm = names_aa)
+  # #Read Excel Sheets
+  aa$Edges    <- read_excel(path = loc_src, sheet = "Edges")
+  aa$Vertices <- read_excel(path = loc_src, sheet = "Vertices")
+  #
+  # #Clean Edges
+  names_bb <- c("Node_1", "Node_2", "Recognition", "Friendship")
+  # #Rename | To Factor |
+  bb <- aa$Edges |> rename_with(make.names) |> 
+    rename_with(~ tolower(gsub(".", "_", .x, fixed = TRUE))) |> 
+    mutate(across(starts_with("vertex_"), factor)) |> 
+    mutate(across(c(recognition, friendship), factor, levels = c(0, 1), labels = c("No", "Yes")))
+  # #Rename
+  names(bb) <- names_bb
+  aa$Edges <- bb
+  #
+  # #Clean Vertices
+  names_bb <- c("Node", "Gender", "Status", "ACCT", "IE", "MS_MIS", "MBA", "Group", "Major")
+  # #Rename | Replace NA | Replace x | To Factor |
+  bb <- aa$Vertices |> rename_with(make.names) |> 
+    rename_with(~ tolower(gsub(".", "_", .x, fixed = TRUE))) |> 
+    mutate(across(c(acct, ie, ms_mis, mba), ~ replace_na(., "No"))) |> 
+    mutate(across(c(acct, ie, ms_mis, mba), ~gsub("x", "Yes", .))) |> 
+    mutate(across(where(is.character), factor))
+  # #Rename
+  names(bb) <- names_bb
+  aa$Vertices <- bb
+  #
+  # #Save
+  p01km_4 <- aa
+  saveRDS(p01km_4, loc_rds)
+} else { 
+  p01km_4 <- aa <- readRDS(loc_rds)
+}
+```
+
+```{r 'P01-Dimensions-KM'}
+# #Dimensions of Each Sheet: Row 1 (Rows), Row 2 (Columns), Columns (Sheets)
+vapply(p01km_1, dim, numeric(2))
+vapply(p01km_4, dim, numeric(2))
+```
+
+### Structure {.unlisted .unnumbered}
+
+```{r 'P01-Structure-KM'}
+str(p01km_1)
+str(p01km_4)
+```
+
+### Summary {.unlisted .unnumbered}
+
+```{r 'P01-Summary-KM'}
+# #Summary of List Objects
+lapply(p01km_1, summary)
+lapply(p01km_4, summary)
+```
+
+### Import {.unlisted .unnumbered}
+
+```{r 'P01-XL-KM-1-A', eval=FALSE, ref.label=c('P01-XL-KM-1')}
+# #Ref another file chunk
+```
+
+```{r 'P01-XL-KM-4-A', eval=FALSE, ref.label=c('P01-XL-KM-4')}
+# #Ref another file chunk
+```
+
+### ETC {.unlisted .unnumbered}
+
+```{r 'P01-ETC', include=TRUE, eval=FALSE}
+# #Count NA in Columns
+if(FALSE) colSums(is.na(bb)) |> as_tibble(rownames = "Cols") |> filter(value > 0)
+# #Subset Rows
+if(FALSE) bb |> select(1) |> slice(1:10)
+# #Comma separated string having each item within quotes for easy pasting as character not objects
+if(FALSE) cat('"', paste0(names(which(sapply(bb, is.factor))), collapse = '", "'), '"\n', sep = '')
+if(FALSE) cat('"', paste0(levels(bb$Arrival), collapse = '", "'), '"\n', sep = '')
+# #Filter
+if(FALSE) bb |> filter(is.na(account_length)) |> select(churn, account_length, vmail_plan)
+# #Count Yes/No or True/False in ALL such Columns
+if(FALSE) bb |> select(churn) |> 
+  pivot_longer(everything()) |> count(name, value) |> 
+  pivot_wider(names_from = value, values_from = n)
+# #Count Unique of all Columns to decide which should be Factors
+if(FALSE) bb |> summarise(across(everything(), ~ length(unique(.)))) |> pivot_longer(everything())
+# #Summary of Columns of a class: is.factor is.numeric is.character
+if(FALSE) bb |> select(where(is.factor)) |> summary()
+# #Names and Indices of Columns of class: is.factor is.numeric is.character
+if(FALSE) which(sapply(bb, is.factor))
+# #Levels of Factor Columns
+if(FALSE) lapply(bb[c(3, 6:9, 15)], levels)
+# #Frequency of Each level of Factor
+if(FALSE) bb |> count(churn) |> arrange(desc(n))
+# #Coding for Dummy Variables
+if(FALSE) contrasts(bb$Married) 
+# #Vector of all column classes
+if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
+```
+
+
+## X
+
+```{r 'B-'}
+  #
+  ii <- graph.adjacency(aa$AdjMat)
+  get.edgelist(ii)
+```
 
 
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
 ```{r 'P01-Cleanup', include=FALSE, cache=FALSE}
-if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll)
+if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll, loc_rds, loc_src, names_ii, p01km_1, p01km_4)
 ```
 
 ```{r 'P01-Validation', include=TRUE, cache=FALSE}
