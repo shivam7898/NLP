@@ -205,14 +205,178 @@ if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
 
-## X
+## Kite
 
-```{r 'B-'}
-  #
-  ii <- graph.adjacency(aa$AdjMat)
-  get.edgelist(ii)
+### Get iGraph from Adjacency Matrix
+
+```{r 'P01-iGraph-Kite'}
+# #Get iGraph from Adjacency Matrix: undirected > directed
+kite <- graph_from_adjacency_matrix(p01kite, mode = "directed")
+class(kite)
+#
+kite
+#
+# #Undirected
+graph_from_adjacency_matrix(p01kite, mode = "undirected")
+#
+# #Count Vertices
+vcount(kite)
+#
+# #Count Edges
+ecount(kite)
 ```
 
+### Edge List
+
+```{r 'P01-EdgeList-Kite'}
+# #Get Edge List from iGraph
+ii <- as_edgelist(kite, names = TRUE)
+str(ii)
+head(ii)
+```
+
+### Shortest Paths
+
+- The \textcolor{pink}{shortest paths} matrix shows us the minimum number of edges between each member (degrees of separation)
+  - The shortest path length from a vertex to itself is always zero. 
+
+
+```{r 'P01-Shortest-Paths-Kite'}
+# #Histogram of the shortest path length between each pair of vertices.
+distance_table(kite, directed = TRUE)
+#
+# #Numeric matrix with length(to) columns and length(v) rows. 
+distances(kite, mode = "all")
+```
+
+### Diameter
+
+- The \textcolor{pink}{diameter} of a network tells us the number of edges between the most distant members
+  - The diameter of a graph is the length of the longest geodesic.
+  
+```{r 'P01-Diameter-Kite'}
+# #Diameter
+diameter(kite, directed = TRUE)
+#
+# #Two vertex ids, the vertices which are connected by the diameter path.
+farthest_vertices(kite, directed = TRUE)
+```
+
+### Reciprocity
+
+- \textcolor{pink}{Reciprocity} is the ratio of the number of reciprocated edges to the number of total edges.
+
+```{r 'P01-Reciprocity-Kite'}
+# #Reciprocity
+reciprocity(kite)
+```
+
+### Density or Clustering Coefficient
+
+- The \textcolor{pink}{density} or 'Clustering Coefficient' of a graph is the ratio of the number of edges and the number of possible edges.
+
+
+```{r 'P01-Density-Kite'}
+# #Density
+edge_density(kite)
+```
+
+### Centrality
+
+#### Degree Centrality
+
+- The \textcolor{pink}{degree} of a vertex is the number connections (adjacent edges) for a node
+
+
+```{r 'P01-Centrality-Degree-Kite'}
+# #Vector of each Vertex Degree: mode = c("all", "out", "in", "total")
+degree(kite, mode = "all")
+```
+
+#### Closeness Centrality
+
+- \textcolor{pink}{Closeness centrality} measures how many steps is required to access every other vertex from a given vertex.
+  - Normalized closeness centrality shows the inverse of the number of edges to all other nodes in the graph (e.g. a value of .5 means an average of two edges)
+
+```{r 'P01-Centrality-Closeness-Kite'}
+# #Vector of each Vertex Closeness: mode = c("all", "out", "in", "total")
+closeness(kite, mode = "all", normalized = TRUE) |> round(3)
+```
+
+#### Betweenness Centrality
+
+- \textcolor{pink}{Betweenness centrality} shows the number of shortest paths a node is on between pairs of other nodes. 
+  - If multiple shortest paths between two nodes exist the betweenness is shared among all the intermediate nodes
+
+```{r 'P01-Centrality-Betweenness-Kite'}
+# #Betweenness returns a 'communities' object
+ii <- cluster_edge_betweenness(kite, directed = TRUE) 
+class(ii)
+ii
+```
+
+#### Eigenvector Centrality or Pagerank
+
+- \textcolor{pink}{Eigenvector centrality} or Pagerank scores correspond to the values of the first eigenvector of the graph adjacency matrix; these scores may, in turn, be interpreted as arising from a reciprocal process in which the centrality of each actor is proportional to the sum of the centralities of those actors to whom he or she is connected. 
+  - In general, vertices with high eigenvector centralities are those which are connected to many other vertices which are, in turn, connected to many others.
+  - It is a recursive measure of centrality, measuring each node by not only the number of connections it has, but weighting that metric by how many connections its connections have, which are in turn weighted by their connections etc. 
+
+
+```{r 'P01-Centrality-Eigenvector-Kite'}
+# #List of Eigenvector and Eigenvalue Score
+ii <- eigen_centrality(kite, directed = TRUE) 
+#
+# #Eigenvector of each Vertex
+ii$vector |> round(3)
+#
+# #Eigenvalue Score
+ii$value
+```
+
+#### Degree & Eigenvalue
+
+- Residual of Simple Linear Regression can be used to size the nodes in our network. This may identify nodes which are connected to only a few nodes, which are "important" i.e. they have high eigenvector centrality.
+
+```{r 'P01-Degree-Eigenvector-Kite'}
+ii_deg <- degree(kite, mode = "all")
+ii_egn <- eigen_centrality(kite, directed = TRUE)$vector
+# #Tibble
+ii <- tibble(Vertices = names(ii_deg), Degree = ii_deg, Eigen = ii_deg)
+# #Regression
+ii_res <- lm(Eigen ~ Degree, data = ii)$residuals |> round(7)
+# #Add Residuals
+ii <- ii |> add_column(Residual = ii_res)
+```
+
+### Cliques
+
+- \textcolor{pink}{Cliques} are sets of nodes which are all connected to one another. 
+  - NOTE: Directed graphs will be considered as Undirected ones for Cliques calculation
+
+```{r 'P01-Cliques-Kite'}
+# #Max Cliques 
+ii <- max_cliques(as.undirected(kite))
+# #Get Max Length of List Elements
+jj <- max(vapply(ii, length, integer(1)))
+# #Get Logical Vector filter for the matching length
+kk <- vapply(ii, function(x) length(x) == jj, logical(1))
+# #subset
+ll <- ii[kk]
+#
+mm <- largest_cliques(as.undirected(kite)) 
+mm
+#
+# #It if unknown why both are not identical
+if(FALSE) {
+  identical(ll, mm)
+  ll
+  mm
+  str(ll)
+  str(mm)
+  attributes(ll)
+  attributes(mm)
+}
+```
 
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
