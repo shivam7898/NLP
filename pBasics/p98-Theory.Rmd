@@ -1,6 +1,6 @@
-# NLP Theory {#p99}
+# NLP Theory {#p98}
 
-```{r 'P99', include=FALSE, cache=FALSE}
+```{r 'P98', include=FALSE, cache=FALSE}
 sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
@@ -398,13 +398,13 @@ Some pairs of people are not directly connected. When a third person bridges a c
 
 - Sub-group analysis - 16:20 29
 
-## Validation {#val-p99 .unlisted .unnumbered .tabset .tabset-fade}
+## Validation {#val-p98 .unlisted .unnumbered .tabset .tabset-fade}
 
-```{r 'P99-Cleanup', include=FALSE, cache=FALSE}
+```{r 'P98-Cleanup', include=FALSE, cache=FALSE}
 if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll)
 ```
 
-```{r 'P99-Validation', include=FALSE, cache=FALSE}
+```{r 'P98-Validation', include=FALSE, cache=FALSE}
 # #SUMMARISED Packages and Objects (BOOK CHECK)
 f_()
 #
