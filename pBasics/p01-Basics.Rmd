@@ -287,15 +287,30 @@ stopifnot(identical(kk, ll))
 ll
 ```
 
+### Shortest Paths
+
+- The \textcolor{pink}{shortest paths} matrix shows us the minimum number of edges between each member (degrees of separation)
+  - The shortest path length from a vertex to itself is always zero. 
+
+
+```{r 'P01-Shortest-Paths-Kite'}
+# #Histogram of the shortest path length between each pair of vertices.
+distance_table(kite, directed = TRUE)
+#
+# #Numeric matrix with length(to) columns and length(v) rows. 
+distances(kite, mode = "all")
+```
+
+
 ### Network {.tabset .tabset-fade}
 
 #### Plot {.unlisted .unnumbered}
 
 ```{r 'P01-Plot-Kite-01', include=FALSE}
 set.seed(3)
-# #Get specific layout coordinates in a Matrix using Fruchterman-Reingold
 hh <- kite
-lay_hh <- layout_with_fr(hh)
+# #Layout: Fruchterman Reingold or Kamada Kawai
+lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
 #
 ttl_hh <- "Krackhardt Kite" 
 cap_hh <- "P01I01"
@@ -315,8 +330,80 @@ if(!file.exists(loc_png)) {
 }
 ```
 
-```{r 'P01I01', echo=FALSE, fig.cap="(P01I01) Krackhardt Kite"}
+```{r 'P01I01', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
 include_graphics(here("images", "P01I01-Kite.png"))
+```
+
+
+```{r 'P01-Plot-Kite-02', include=FALSE}
+set.seed(3)
+# #Get specific layout coordinates in a Matrix using Fruchterman-Reingold
+hh <- kite
+# #Layout: Fruchterman Reingold or Kamada Kawai
+lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
+# #Use Degrees of each node to indicate size
+size_hh <- degree(hh, mode = "all") * 5
+#
+ttl_hh <- "Krackhardt Kite: Degrees denoted by Size" 
+cap_hh <- "P01I02"
+loc_png <- here("images", "P01I02-Kite-Degree.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
+  #dev.control('enable') 
+  plot(hh, layout = lay_hh, vertex.size = size_hh)
+  title(main = ttl_hh, line = 3, adj = 0)
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
+}
+```
+
+```{r 'P01I02', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
+include_graphics(here("images", "P01I02-Kite-Degree.png"))
+```
+
+```{r 'P01-Plot-Kite-03', include=FALSE}
+set.seed(3)
+hh <- kite
+# #Layout: Fruchterman Reingold or Kamada Kawai
+lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
+# #Use Degrees of each node to indicate size
+size_hh <- degree(hh, mode = "all") * 5
+# #Distances of ALL Nodes from the Specified Node i.e. "D"
+away_d <- distances(hh, v = V(bb)["D"], to = V(hh))
+# #Get a Vector of same length with Maximum Unique Colors & accounting for 0 index
+v_col_hh <- viridis(max(away_d) + 1, direction = -1)[away_d + 1]
+v_lbl_col_hh <- c(rep("black", vcount(hh)-3), rep("white", 3))
+#
+ttl_hh <- "Krackhardt Kite: Distances from D" 
+cap_hh <- "P01I03"
+loc_png <- here("images", "P01I03-Kite-Degree-D.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
+  #dev.control('enable') 
+  plot(hh, layout = lay_hh, 
+       vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh)
+  title(main = ttl_hh, line = 3, adj = 0)
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
+}
+```
+
+```{r 'P01I03', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
+include_graphics(here("images", "P01I03-Kite-Degree-D.png"))
+```
+
+```{r 'P01I010203', echo=FALSE, out.width='33%', ref.label=c('P01I01', 'P01I02', 'P01I03'), fig.cap="(P01I01 P01I02 P01I03) Krackhardt Kite"}
+#
 ```
 
 #### Code {.unlisted .unnumbered}
@@ -325,19 +412,12 @@ include_graphics(here("images", "P01I01-Kite.png"))
 #
 ```
 
-
-### Shortest Paths
-
-- The \textcolor{pink}{shortest paths} matrix shows us the minimum number of edges between each member (degrees of separation)
-  - The shortest path length from a vertex to itself is always zero. 
-
-
-```{r 'P01-Shortest-Paths-Kite'}
-# #Histogram of the shortest path length between each pair of vertices.
-distance_table(kite, directed = TRUE)
+```{r 'P01-Plot-Kite-02-A', eval=FALSE, ref.label=c('P01-Plot-Kite-02')}
 #
-# #Numeric matrix with length(to) columns and length(v) rows. 
-distances(kite, mode = "all")
+```
+
+```{r 'P01-Plot-Kite-03-A', eval=FALSE, ref.label=c('P01-Plot-Kite-03')}
+#
 ```
 
 ### Diameter
@@ -377,7 +457,6 @@ edge_density(kite)
 #### Degree Centrality
 
 - The \textcolor{pink}{degree} of a vertex is the number connections (adjacent edges) for a node
-
 
 ```{r 'P01-Centrality-Degree-Kite'}
 # #Vector of each Vertex Degree: mode = c("all", "out", "in", "total")
