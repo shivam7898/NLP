@@ -207,33 +207,124 @@ if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 
 ## Kite
 
-### Get iGraph from Adjacency Matrix
+### Undirected and Directed Graphs
+
+- \textcolor{pink}{Undirected}: $\quad A[i, j] = 1 \quad\Rightarrow\quad A[j, i] = 1$
+- \textcolor{pink}{Directed} &nbsp; &nbsp; &nbsp;: $\quad A[i, j] = 1 \quad\nRightarrow\quad A[j, i] = 1$
+
+### iGraph & Adjacency Matrix
+
+- \textcolor{pink}{iGraph} object description has 4 letters and 2 numbers
+  - D or U, for a directed or undirected graph
+  - N for a named graph (where nodes have a \textcolor{pink}{name} attribute)
+  - W for a weighted graph (where edges have a \textcolor{pink}{weight} attribute)
+  - B for a bipartite (two-mode) graph (where nodes have a \textcolor{pink}{type} attribute)
+  - Numbers: Nodes (or Vertices) and Edges
+  - The description also lists node & edge attributes, for example:
+    - (g/c) - graph-level character attribute
+    - (v/c) - vertex-level character attribute
+    - (e/n) - edge-level numeric attribute
+
 
 ```{r 'P01-iGraph-Kite'}
-# #Get iGraph from Adjacency Matrix: undirected > directed
-kite <- graph_from_adjacency_matrix(p01kite, mode = "directed")
+bb <- p01kite
+# #Get iGraph (Undirected) from Adjacency Matrix
+u_kite <- graph_from_adjacency_matrix(bb, mode = "undirected")
+u_kite
+#
+# #Get iGraph (Directed) from Adjacency Matrix
+d_kite <- graph_from_adjacency_matrix(bb, mode = "directed")
+d_kite
+#
+kite <- u_kite
 class(kite)
 #
-kite
-#
-# #Undirected
-graph_from_adjacency_matrix(p01kite, mode = "undirected")
-#
+# #Get Adjacency Matrix from iGraph (Undirected)
+ii <- as_adjacency_matrix(u_kite, type = "both", sparse = FALSE)
+# #Get Adjacency Matrix from iGraph (Directed)
+jj <- as_adjacency_matrix(d_kite, sparse = FALSE)
+stopifnot(all(identical(bb, ii), identical(bb, jj)))
+```
+
+### Vertices
+
+```{r 'P01-Vertices-Kite'}
 # #Count Vertices
 vcount(kite)
 #
+# #Named Vector of Vertices
+V(kite)
+```
+
+### Edges
+
+```{r 'P01-Edges-Kite'}
 # #Count Edges
 ecount(kite)
+#
+# #Named Vector of Edges
+E(kite)
 ```
 
-### Edge List
+### Edgelist & iGraph
 
 ```{r 'P01-EdgeList-Kite'}
-# #Get Edge List from iGraph
-ii <- as_edgelist(kite, names = TRUE)
+bb <- kite
+#
+# #Get Edgelist from iGraph
+ii <- as_edgelist(bb, names = TRUE)
+class(ii)
 str(ii)
 head(ii)
+#
+# #Get iGraph from Edgelist
+jj <- graph_from_edgelist(ii, directed = TRUE)
+#
+kk <- attributes(E(bb))$vnames
+ll <- attributes(E(jj))$vnames
+stopifnot(identical(kk, ll))
+#
+ll
 ```
+
+### Network {.tabset .tabset-fade}
+
+#### Plot {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-01', include=FALSE}
+set.seed(3)
+# #Get specific layout coordinates in a Matrix using Fruchterman-Reingold
+hh <- kite
+lay_hh <- layout_with_fr(hh)
+#
+ttl_hh <- "Krackhardt Kite" 
+cap_hh <- "P01I01"
+loc_png <- here("images", "P01I01-Kite.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
+  #dev.control('enable') 
+  plot(hh, layout = lay_hh)
+  title(main = ttl_hh, line = 3, adj = 0)
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
+}
+```
+
+```{r 'P01I01', echo=FALSE, fig.cap="(P01I01) Krackhardt Kite"}
+include_graphics(here("images", "P01I01-Kite.png"))
+```
+
+#### Code {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-01-A', eval=FALSE, ref.label=c('P01-Plot-Kite-01')}
+#
+```
+
 
 ### Shortest Paths
 
