@@ -18,6 +18,8 @@ if (!identical(.libPaths()[1], "C:/Softwares/R/LibFiles")) {
 }
 
 # #To only download binaries and avoid 'latest code' type Errors in Windows.
+# #"There is a binary version available (and will be installed) but the source version is later"
+# #i.e. The package has updated recently on CRAN but the binary is not yet available for your OS.
 options(pkgType = "binary")
 
 # #Disable Scientific Notation because p-values, residuals etc. are irritating to convert
