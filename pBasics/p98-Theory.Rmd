@@ -42,10 +42,6 @@ reticulate::source_python(here::here("code", "B01Modules.py"))
     - Ironically, digital culture may have less durability than pre-digital culture.
 
 
-```{definition 'Network'}
-A \textcolor{pink}{network} is a collection of things and their relationships to one another. The \textcolor{pink}{'things'} that are connected are called nodes, vertices, or entities. The \textcolor{pink}{connections} between the vertices are called edges, ties, relationships or links.
-```
-
 
 ```{definition 'Social-Networks'}
 A special subset of networks are \textcolor{pink}{social networks} which are created whenever people interact, directly or indirectly, with other people, institutions, and artifacts. 
@@ -131,11 +127,6 @@ Using \textcolor{pink}{network analysis}, we can visualize complex sets of relat
     - Affiliation networks are the raw material of many systems that recommend items of interest, such as 'Customers Who Bought This Item Also Bought' feature.
 
 ## Network analysis Metrics
-
-```{definition 'Vertex-Edge'}
-\textcolor{pink}{Vertex count} is the number of entities in the network while the \textcolor{pink}{edge count} is the number of connections among them.
-```
-
 
 ```{definition 'bridge-hole'}
 Some pairs of people are not directly connected. When a third person bridges a connection, we can think of that person as a broker, a \textcolor{pink}{'bridge'} or a 'connector'. When that person is missing, we can think of the gap as a \textcolor{pink}{'structural hole'}, a place in which there is a missing connector.

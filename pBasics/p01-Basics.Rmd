@@ -205,6 +205,13 @@ if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
 
+## Network
+
+```{definition 'Network'}
+A \textcolor{pink}{network} is a collection of entities and their relationships to one another. The entities that are connected are called \textcolor{pink}{nodes (vertices)}. The connections between the vertices are called \textcolor{pink}{edges (links)}.
+```
+
+
 ## Kite
 
 ### Undirected and Directed Graphs
@@ -246,7 +253,24 @@ jj <- as_adjacency_matrix(d_kite, sparse = FALSE)
 stopifnot(all(identical(bb, ii), identical(bb, jj)))
 ```
 
-### Vertices
+### Layout
+
+```{r 'P01-Layout-Kite'}
+# #Attaching a default layout to the Network for ease of comparison
+if(FALSE) {
+  # #Generate a Layout Matrix of Coordinates
+  set.seed(3)
+  # #Layout: Fruchterman Reingold layout_with_fr () or Kamada Kawai layout_with_kk()
+  ii <- round(layout_with_fr(kite), 1)
+  dput(ii)
+}
+# #Attach Layout Coordinates as Graph Attribute
+graph_attr(kite, "layout") <- matrix(c(9.8, 11.1, 9.3, 10.6, 11.9, 10.4, 11.5, 11.5, 12.1, 12.7, 
+                                       6.1, 5.7, 6.9, 6.5, 6, 7.5, 7.1, 8.8, 10.6, 12), 
+                                     ncol = 2, byrow = FALSE) 
+```
+
+### Vertices or Nodes
 
 ```{r 'P01-Vertices-Kite'}
 # #Count Vertices
@@ -256,7 +280,7 @@ vcount(kite)
 V(kite)
 ```
 
-### Edges
+### Edges or Links
 
 ```{r 'P01-Edges-Kite'}
 # #Count Edges
@@ -340,11 +364,7 @@ edge_density(kite)
 #### Plot {.unlisted .unnumbered}
 
 ```{r 'P01-Plot-Kite', include=FALSE}
-set.seed(3)
 hh <- kite
-#
-# #Layout: Fruchterman Reingold or Kamada Kawai
-lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
 #
 # #Use Degrees of each node to indicate size
 size_m <- 5L 
@@ -367,8 +387,8 @@ e_col_hh[unlist(dia_hh$epath)] <- "orange"
 e_w_hh <- rep(2, ecount(hh))
 e_w_hh[unlist(dia_hh$epath)] <- 4
 # #Node color for the Path
-#vcol <- rep("gray", vcount(hh))
-#vcol[unlist(dia_hh$vpath)] <- "gold"
+#v_col_hh <- rep("gray", vcount(hh))
+#v_col_hh[unlist(dia_hh$vpath)] <- "gold"
 #
 # #Colour Legend
 lgd_col_hh <- tibble(Text = unique(as.vector(away_d)), Fill = unique(v_col_hh)) |> arrange(Text)
@@ -384,8 +404,7 @@ loc_png <- here("images", "P01I01-Kite.png")
 if(!file.exists(loc_png)) {
   png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
   #dev.control('enable') 
-  plot(hh, layout = lay_hh, 
-       vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, 
+  plot(hh, vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, 
        edge.color = e_col_hh, edge.width = e_w_hh)
   legend(x = "topleft", inset = 0.2, legend = lgd_col_hh$Text, pt.bg = lgd_col_hh$Fill, 
          pch = 21, pt.cex = 3, cex = 1.3, title = lgd_ttl_col_hh)
@@ -441,6 +460,7 @@ closeness(kite, mode = "all", normalized = TRUE) |> round(3)
 # #Betweenness returns a 'communities' object
 ii <- cluster_edge_betweenness(kite, directed = TRUE) 
 class(ii)
+str(ii)
 ii
 ```
 
@@ -467,45 +487,77 @@ ii$value
 - Residual of Simple Linear Regression can be used to size the nodes in our network. This may identify nodes which are connected to only a few nodes, which are "important" i.e. they have high eigenvector centrality.
 
 ```{r 'P01-Degree-Eigenvector-Kite'}
-ii_deg <- degree(kite, mode = "all")
-ii_egn <- eigen_centrality(kite, directed = TRUE)$vector
+bb <- kite
+ii_deg <- degree(bb, mode = "all")
+ii_egn <- eigen_centrality(bb)$vector
 # #Tibble
-ii <- tibble(Vertices = names(ii_deg), Degree = ii_deg, Eigen = ii_deg)
+ii <- tibble(Vertices = names(ii_deg), Degree = ii_deg, Eigen = ii_egn)
 # #Regression
 ii_res <- lm(Eigen ~ Degree, data = ii)$residuals |> round(7)
 # #Add Residuals
-ii <- ii |> add_column(Residual = ii_res)
+ii |> add_column(Residual = ii_res) |> mutate(Size = abs(Residual)*100)
 ```
 
-### Cliques
+### Cliques {.tabset .tabset-fade}
 
 - \textcolor{pink}{Cliques} are sets of nodes which are all connected to one another. 
   - NOTE: Directed graphs will be considered as Undirected ones for Cliques calculation
 
 ```{r 'P01-Cliques-Kite'}
-# #Max Cliques 
-ii <- max_cliques(as.undirected(kite))
-# #Get Max Length of List Elements
-jj <- max(vapply(ii, length, integer(1)))
-# #Get Logical Vector filter for the matching length
-kk <- vapply(ii, function(x) length(x) == jj, logical(1))
-# #subset
-ll <- ii[kk]
+bb <- kite
+# #Max Cliques with Lengths
+summary(max_cliques(bb))[, 1]
 #
-mm <- largest_cliques(as.undirected(kite)) 
-mm
+# #Largest Cliques
+largest_cliques(bb)
+```
+
+#### Plot {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-Cliques', include=FALSE}
+hh <- kite
 #
-# #It if unknown why both are not identical
-if(FALSE) {
-  identical(ll, mm)
-  ll
-  mm
-  str(ll)
-  str(mm)
-  attributes(ll)
-  attributes(mm)
+# #Get Largest Cliques
+cliq_hh <- largest_cliques(hh)
+# #Color Cliques
+pal_hh <- viridis(length(cliq_hh) + 1) #Palette
+v_col_hh <- rep(last(pal_hh), vcount(hh))
+v_col_hh[cliq_hh[[1]]] <- pal_hh[1]
+v_col_hh[cliq_hh[[2]]] <- pal_hh[2]
+#
+# #Text Label Colour
+v_lbl_col_hh <- c(rep("black", vcount(hh)))
+v_lbl_col_hh[cliq_hh[[1]]] <- "white"
+v_lbl_col_hh[cliq_hh[[2]]] <- "white"
+#
+ttl_hh <- "Krackhardt Kite: Cliques" 
+cap_hh <- "P01I02"
+loc_png <- here("images", "P01I02-Kite-Cliques.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
+  #dev.control('enable') 
+  plot(hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, mark.groups = cliq_hh)
+  title(main = ttl_hh, line = 3, adj = 0)
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
 }
 ```
+
+```{r 'P01I02', echo=FALSE, fig.cap="(P01I02) Krackhardt Kite: Cliques"}
+include_graphics(here("images", "P01I02-Kite-Cliques.png"))
+```
+
+#### Code {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-Cliques-A', eval=FALSE, ref.label=c('P01-Plot-Kite-Cliques')}
+#
+```
+
 
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
