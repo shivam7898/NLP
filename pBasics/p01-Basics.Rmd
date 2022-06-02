@@ -372,12 +372,19 @@ hh <- kite
 # #Layout: Fruchterman Reingold or Kamada Kawai
 lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
 # #Use Degrees of each node to indicate size
-size_hh <- degree(hh, mode = "all") * 5
+size_m <- 5L 
+size_hh <- degree(hh, mode = "all") * size_m
 # #Distances of ALL Nodes from the Specified Node i.e. "D"
 away_d <- distances(hh, v = V(bb)["D"], to = V(hh))
 # #Get a Vector of same length with Maximum Unique Colors & accounting for 0 index
 v_col_hh <- viridis(max(away_d) + 1, direction = -1)[away_d + 1]
 v_lbl_col_hh <- c(rep("black", vcount(hh)-3), rep("white", 3))
+# #Colour Legend
+lgd_col_hh <- tibble(Text = unique(as.vector(away_d)), Fill = unique(v_col_hh)) |> arrange(Text)
+lgd_ttl_col_hh <- "Distance"
+# #Size Legend
+lgd_size_hh <- sort(unique(size_hh))/size_m
+lgd_ttl_size_hh <- "Degree"
 #
 ttl_hh <- "Krackhardt Kite: Distances from D" 
 cap_hh <- "P01I03"
@@ -388,6 +395,10 @@ if(!file.exists(loc_png)) {
   #dev.control('enable') 
   plot(hh, layout = lay_hh, 
        vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh)
+  legend(x = "topleft", inset = 0.2, legend = lgd_col_hh$Text, pt.bg = lgd_col_hh$Fill, 
+         pch = 21, pt.cex = 3, cex = 1.3, title = lgd_ttl_col_hh)
+  legend(x = "topleft", legend = seq.int(lgd_size_hh), pt.cex = lgd_size_hh, 
+         pch = 1, cex = 1.3, x.intersp = 1.5, y.intersp = 1.5, title = lgd_ttl_size_hh)
   title(main = ttl_hh, line = 3, adj = 0)
   title(sub = cap_hh, line = 4, adj = 1)
   P01 <- recordPlot()
