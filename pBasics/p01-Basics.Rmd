@@ -302,135 +302,6 @@ distances(kite, mode = "all")
 ```
 
 
-### Network {.tabset .tabset-fade}
-
-#### Plot {.unlisted .unnumbered}
-
-```{r 'P01-Plot-Kite-01', include=FALSE}
-set.seed(3)
-hh <- kite
-# #Layout: Fruchterman Reingold or Kamada Kawai
-lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
-#
-ttl_hh <- "Krackhardt Kite" 
-cap_hh <- "P01I01"
-loc_png <- here("images", "P01I01-Kite.png") 
-#
-if(!file.exists(loc_png)) {
-  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
-  #dev.control('enable') 
-  plot(hh, layout = lay_hh)
-  title(main = ttl_hh, line = 3, adj = 0)
-  title(sub = cap_hh, line = 4, adj = 1)
-  P01 <- recordPlot()
-  dev.off()
-  assign(cap_hh, P01)
-  rm(P01)
-  #eval(parse(text = cap_hh))
-}
-```
-
-```{r 'P01I01', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
-include_graphics(here("images", "P01I01-Kite.png"))
-```
-
-
-```{r 'P01-Plot-Kite-02', include=FALSE}
-set.seed(3)
-# #Get specific layout coordinates in a Matrix using Fruchterman-Reingold
-hh <- kite
-# #Layout: Fruchterman Reingold or Kamada Kawai
-lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
-# #Use Degrees of each node to indicate size
-size_hh <- degree(hh, mode = "all") * 5
-#
-ttl_hh <- "Krackhardt Kite: Degrees denoted by Size" 
-cap_hh <- "P01I02"
-loc_png <- here("images", "P01I02-Kite-Degree.png") 
-#
-if(!file.exists(loc_png)) {
-  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
-  #dev.control('enable') 
-  plot(hh, layout = lay_hh, vertex.size = size_hh)
-  title(main = ttl_hh, line = 3, adj = 0)
-  title(sub = cap_hh, line = 4, adj = 1)
-  P01 <- recordPlot()
-  dev.off()
-  assign(cap_hh, P01)
-  rm(P01)
-  #eval(parse(text = cap_hh))
-}
-```
-
-```{r 'P01I02', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
-include_graphics(here("images", "P01I02-Kite-Degree.png"))
-```
-
-```{r 'P01-Plot-Kite-03', include=FALSE}
-set.seed(3)
-hh <- kite
-# #Layout: Fruchterman Reingold or Kamada Kawai
-lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
-# #Use Degrees of each node to indicate size
-size_m <- 5L 
-size_hh <- degree(hh, mode = "all") * size_m
-# #Distances of ALL Nodes from the Specified Node i.e. "D"
-away_d <- distances(hh, v = V(bb)["D"], to = V(hh))
-# #Get a Vector of same length with Maximum Unique Colors & accounting for 0 index
-v_col_hh <- viridis(max(away_d) + 1, direction = -1)[away_d + 1]
-v_lbl_col_hh <- c(rep("black", vcount(hh)-3), rep("white", 3))
-# #Colour Legend
-lgd_col_hh <- tibble(Text = unique(as.vector(away_d)), Fill = unique(v_col_hh)) |> arrange(Text)
-lgd_ttl_col_hh <- "Distance"
-# #Size Legend
-lgd_size_hh <- sort(unique(size_hh))/size_m
-lgd_ttl_size_hh <- "Degree"
-#
-ttl_hh <- "Krackhardt Kite: Distances from D" 
-cap_hh <- "P01I03"
-loc_png <- here("images", "P01I03-Kite-Degree-D.png") 
-#
-if(!file.exists(loc_png)) {
-  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
-  #dev.control('enable') 
-  plot(hh, layout = lay_hh, 
-       vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh)
-  legend(x = "topleft", inset = 0.2, legend = lgd_col_hh$Text, pt.bg = lgd_col_hh$Fill, 
-         pch = 21, pt.cex = 3, cex = 1.3, title = lgd_ttl_col_hh)
-  legend(x = "topleft", legend = seq.int(lgd_size_hh), pt.cex = lgd_size_hh, 
-         pch = 1, cex = 1.3, x.intersp = 1.5, y.intersp = 1.5, title = lgd_ttl_size_hh)
-  title(main = ttl_hh, line = 3, adj = 0)
-  title(sub = cap_hh, line = 4, adj = 1)
-  P01 <- recordPlot()
-  dev.off()
-  assign(cap_hh, P01)
-  rm(P01)
-  #eval(parse(text = cap_hh))
-}
-```
-
-```{r 'P01I03', include=FALSE, fig.cap="This-Caption-NOT-Shown"}
-include_graphics(here("images", "P01I03-Kite-Degree-D.png"))
-```
-
-```{r 'P01I010203', echo=FALSE, out.width='33%', ref.label=c('P01I01', 'P01I02', 'P01I03'), fig.cap="(P01I01 P01I02 P01I03) Krackhardt Kite"}
-#
-```
-
-#### Code {.unlisted .unnumbered}
-
-```{r 'P01-Plot-Kite-01-A', eval=FALSE, ref.label=c('P01-Plot-Kite-01')}
-#
-```
-
-```{r 'P01-Plot-Kite-02-A', eval=FALSE, ref.label=c('P01-Plot-Kite-02')}
-#
-```
-
-```{r 'P01-Plot-Kite-03-A', eval=FALSE, ref.label=c('P01-Plot-Kite-03')}
-#
-```
-
 ### Diameter
 
 - The \textcolor{pink}{diameter} of a network tells us the number of edges between the most distant members
@@ -438,10 +309,10 @@ include_graphics(here("images", "P01I03-Kite-Degree-D.png"))
   
 ```{r 'P01-Diameter-Kite'}
 # #Diameter
-diameter(kite, directed = TRUE)
+diameter(kite)
 #
 # #Two vertex ids, the vertices which are connected by the diameter path.
-farthest_vertices(kite, directed = TRUE)
+farthest_vertices(kite)
 ```
 
 ### Reciprocity
@@ -461,6 +332,83 @@ reciprocity(kite)
 ```{r 'P01-Density-Kite'}
 # #Density
 edge_density(kite)
+```
+
+
+### Network {.tabset .tabset-fade}
+
+#### Plot {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite', include=FALSE}
+set.seed(3)
+hh <- kite
+#
+# #Layout: Fruchterman Reingold or Kamada Kawai
+lay_hh <- layout_with_fr(hh) #layout_with_kk(hh) layout_with_fr(hh)
+#
+# #Use Degrees of each node to indicate size
+size_m <- 5L 
+size_hh <- degree(hh, mode = "all") * size_m
+#
+# #Distances of ALL Nodes from the Specified Node i.e. "D"
+away_d <- distances(hh, v = V(hh)["D"], to = V(hh))
+# #Get a Vector of same length with Maximum Unique Colors & accounting for 0 index
+v_col_hh <- viridis(max(away_d) + 1, direction = -1)[away_d + 1]
+v_lbl_col_hh <- c(rep("black", vcount(hh)-3), rep("white", 3))
+#
+# #Get Diameter Path
+far_hh <- farthest_vertices(hh)$vertices
+dia_hh <- shortest_paths(hh, from = V(hh)[far_hh[1]], to  = V(hh)[far_hh[2]], output = "both")
+#
+# #Edge color
+e_col_hh <- rep("gray", ecount(hh))
+e_col_hh[unlist(dia_hh$epath)] <- "orange"
+# #Edge width
+e_w_hh <- rep(2, ecount(hh))
+e_w_hh[unlist(dia_hh$epath)] <- 4
+# #Node color for the Path
+#vcol <- rep("gray", vcount(hh))
+#vcol[unlist(dia_hh$vpath)] <- "gold"
+#
+# #Colour Legend
+lgd_col_hh <- tibble(Text = unique(as.vector(away_d)), Fill = unique(v_col_hh)) |> arrange(Text)
+lgd_ttl_col_hh <- "Distance"
+# #Size Legend
+lgd_size_hh <- sort(unique(size_hh))/size_m
+lgd_ttl_size_hh <- "Degree"
+#
+ttl_hh <- "Krackhardt Kite: Degrees, Diameter, and Distances from D" 
+cap_hh <- "P01I01"
+loc_png <- here("images", "P01I01-Kite.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
+  #dev.control('enable') 
+  plot(hh, layout = lay_hh, 
+       vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, 
+       edge.color = e_col_hh, edge.width = e_w_hh)
+  legend(x = "topleft", inset = 0.2, legend = lgd_col_hh$Text, pt.bg = lgd_col_hh$Fill, 
+         pch = 21, pt.cex = 3, cex = 1.3, title = lgd_ttl_col_hh)
+  legend(x = "topleft", legend = seq.int(lgd_size_hh), pt.cex = lgd_size_hh, 
+         pch = 1, cex = 1.3, x.intersp = 1.5, y.intersp = 1.5, title = lgd_ttl_size_hh)
+  title(main = ttl_hh, line = 3, adj = 0)
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
+}
+```
+
+```{r 'P01I01', echo=FALSE, fig.cap="(P01I01) Krackhardt Kite"}
+include_graphics(here("images", "P01I01-Kite.png"))
+```
+
+#### Code {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-A', eval=FALSE, ref.label=c('P01-Plot-Kite')}
+#
 ```
 
 ### Centrality
