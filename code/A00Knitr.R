@@ -61,6 +61,38 @@ if (!("q_start" %in% ls(envir = .GlobalEnv))) {
       }
     }
     NULL
-  }) 
+  })
+  
+  # #Chunk Colour Change for Python & R
+  # #https://f0nzie.github.io/matplotlib-with-rmarkdown/
+  knitr::knit_hooks$set(decorate = function(before, options) {
+    if (before) {
+       if (options$engine == "python") {
+         label <- "<b> Python</b>"
+         bc <- "#417FB1"
+         sz <- "100%"
+         tc <- "#FFD94C"
+         icon <- fa("python", fill = tc)
+       } else if (options$engine == "R") {
+         label <- "<b> R</b>"
+         bc <- "#4C78DB"
+         sz <- "100%"
+         tc <- "#ffffff"
+		 icon <- fa("r-project", fill = tc)
+       } #else if (options$engine == "bash") {
+       #  label <- "<b>Shell</b>"
+       #  bc <- "#000000"
+       #  sz <- "100%"
+       #  tc <- "#ffffff"
+       #  icon <- "<i class=\"fas fa-terminal\"></i>"
+       #}
+      paste0("<div class=decocode>",
+             "<div style=\"background-color:", bc, "\">",
+             "<span style=\"font-size:", sz, ";color:", tc, "\">", icon,  
+             label, "</span>")
+    } else {
+      "</div><br></div>"
+    }
+  })   
 } else print("Knitr not loaded again.")
 
