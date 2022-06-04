@@ -43,18 +43,35 @@ str(p01kite)
 # #Ref another file chunk
 ```
 
-### Import Python {.unlisted .unnumbered}
+### R to Python {.unlisted .unnumbered}
 
-```{python 'P01-CSV-Kite-PY', decorate=TRUE}
-# #Graph
-g = ig.Graph.Famous("petersen")
-print(g)
+```{r 'P01-R2Y-Kite-Prep', decorate=TRUE}
+# #R Matrix | R DataFrame |
+p01kite_df_r <- as.data.frame(p01kite, row.names = FALSE)
+```
 
-#loc_png = here("images", "P01I01-Kite.png")
-#loc_png = "./../images/abc.png"
-#ig.plot(g, target = loc_png)
+```{python 'P01-R2Y-Kite', decorate=TRUE}
+# #R Matrix | R DataFrame | Pandas DataFrame | Copy | NumPy Structured Array | 
+p01kite_pd_y = r.p01kite_df_r
+pp = p01kite_pd_y.copy()
+qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.dtypes.items()))
+p01kite_np_y = qq.copy()
+p01kite_np_y
 
 ```
+
+### CSV to Python {.unlisted .unnumbered}
+
+```{python 'P01-CSV-Kite-Y', decorate=TRUE}
+loc_src = "./../data/P01-Kite.csv"
+p01kite_y = pd.read_csv(loc_src)
+#
+# #Drop a Column
+pp = p01kite_y.copy()
+pp.drop(columns = ['Nodes'], inplace = True)
+pp
+```
+
 
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 
