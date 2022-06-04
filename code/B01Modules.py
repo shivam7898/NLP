@@ -5,9 +5,12 @@ import platform
 import pip
 import pandas as pd
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn
 import random 
 import copy
 import gc
+import igraph as ig
+import cairo

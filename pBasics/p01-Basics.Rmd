@@ -18,7 +18,7 @@ reticulate::source_python(here::here("code", "B01Modules.py"))
 ```{r 'P01-CSV-Kite', include=FALSE}
 loc_src <- here("data", "P01-Kite.csv")
 loc_rds <- here("data", "P01-Kite.rds")
-if(FALSE | !file.exists(loc_rds)) {
+if(!file.exists(loc_rds)) {
   # #Read Adjacency Matrix from CSV
   aa <- read_csv(loc_src, show_col_types = FALSE)
   # #Columns To RowNames | Named Matrix |
@@ -33,16 +33,28 @@ if(FALSE | !file.exists(loc_rds)) {
 }
 ```
 
-```{r 'P01-Structure-Kite'}
+```{r 'P01-Structure-Kite', decorate=TRUE}
 str(p01kite)
 ```
 
-### Import {.unlisted .unnumbered}
+### Import R {.unlisted .unnumbered}
 
-```{r 'P01-CSV-Kite-A', eval=FALSE, ref.label=c('P01-CSV-Kite')}
+```{r 'P01-CSV-Kite-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-CSV-Kite')}
 # #Ref another file chunk
 ```
 
+### Import Python {.unlisted .unnumbered}
+
+```{python 'P01-CSV-Kite-PY', decorate=TRUE}
+# #Graph
+g = ig.Graph.Famous("petersen")
+print(g)
+
+#loc_png = here("images", "P01I01-Kite.png")
+#loc_png = "./../images/abc.png"
+#ig.plot(g, target = loc_png)
+
+```
 
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 

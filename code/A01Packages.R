@@ -5,7 +5,7 @@ if (!("conflicted" %in% (.packages()))) {
   pkg <- character(0)
   pkg <- c(pkg, "conflicted", "here", "knitr", "reticulate")
   pkg <- c(pkg, "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr")
-  pkg <- c(pkg, "igraph", "httr", "jsonlite", "viridisLite", "scales")
+  pkg <- c(pkg, "igraph", "httr", "jsonlite", "viridisLite", "scales", "fontawesome")
   pkg <- c(pkg, "kableExtra", "readxl", "latex2exp", "e1071", "lubridate", "car", "zoo", "forcats")
   #pkg <- c(pkg, "data.table", "gifski", "nycflights13", "gapminder", "Lahman", "nortest")
   #pkg <- c(pkg, "mice", "VIM", "qcc", "ggpmisc", "microbenchmark", "GGally", "corrplot")
