@@ -302,7 +302,7 @@ str(ii)
 head(ii)
 #
 # #Get iGraph from Edgelist
-jj <- graph_from_edgelist(ii, directed = TRUE)
+jj <- graph_from_edgelist(ii)
 #
 kk <- attributes(E(bb))$vnames
 ll <- attributes(E(jj))$vnames
@@ -319,7 +319,7 @@ ll
 
 ```{r 'P01-Shortest-Paths-Kite'}
 # #Histogram of the shortest path length between each pair of vertices.
-distance_table(kite, directed = TRUE)
+distance_table(kite)
 #
 # #Numeric matrix with length(to) columns and length(v) rows. 
 distances(kite, mode = "all")
@@ -390,7 +390,7 @@ e_w_hh[unlist(dia_hh$epath)] <- 4
 #v_col_hh <- rep("gray", vcount(hh))
 #v_col_hh[unlist(dia_hh$vpath)] <- "gold"
 #
-# #Colour Legend
+# #Color Legend
 lgd_col_hh <- tibble(Text = unique(as.vector(away_d)), Fill = unique(v_col_hh)) |> arrange(Text)
 lgd_ttl_col_hh <- "Distance"
 # #Size Legend
@@ -458,10 +458,21 @@ closeness(kite, mode = "all", normalized = TRUE) |> round(3)
 
 ```{r 'P01-Centrality-Betweenness-Kite'}
 # #Betweenness returns a 'communities' object
-ii <- cluster_edge_betweenness(kite, directed = TRUE) 
-class(ii)
+ii <- cluster_edge_betweenness(kite) 
+attributes(ii)
 str(ii)
-ii
+#
+# #Modularity
+modularity(ii)
+#
+# #Group Sizes
+sizes(ii)
+#
+# #Groups
+setNames(ii$membership, nm = ii$names)
+#
+# #First Group
+ii[[1]]
 ```
 
 #### Eigenvector Centrality or Pagerank
@@ -473,7 +484,7 @@ ii
 
 ```{r 'P01-Centrality-Eigenvector-Kite'}
 # #List of Eigenvector and Eigenvalue Score
-ii <- eigen_centrality(kite, directed = TRUE) 
+ii <- eigen_centrality(kite) 
 #
 # #Eigenvector of each Vertex
 ii$vector |> round(3)
@@ -501,7 +512,13 @@ ii |> add_column(Residual = ii_res) |> mutate(Size = abs(Residual)*100)
 ### Cliques {.tabset .tabset-fade}
 
 - \textcolor{pink}{Cliques} are sets of nodes which are all connected to one another. 
+  - To be included in a clique, a node must be tied to all other nodes in the clique.
+  - A \textcolor{pink}{k-core} is a group where nodes have k edges within the group.
+    - The k-core of graph is a maximal subgraph in which each vertex has at least degree k. 
+    - The coreness of a vertex is k if it belongs to the k-core but not to the (k+1)-core.
+    - Two nodes with coreness of 3 may not be connected at all and may be in separate k-cores.
   - NOTE: Directed graphs will be considered as Undirected ones for Cliques calculation
+  
 
 ```{r 'P01-Cliques-Kite'}
 bb <- kite
@@ -510,6 +527,9 @@ summary(max_cliques(bb))[, 1]
 #
 # #Largest Cliques
 largest_cliques(bb)
+#
+# #Coreness
+coreness(bb)
 ```
 
 #### Plot {.unlisted .unnumbered}
@@ -525,7 +545,7 @@ v_col_hh <- rep(last(pal_hh), vcount(hh))
 v_col_hh[cliq_hh[[1]]] <- pal_hh[1]
 v_col_hh[cliq_hh[[2]]] <- pal_hh[2]
 #
-# #Text Label Colour
+# #Text Label Color
 v_lbl_col_hh <- c(rep("black", vcount(hh)))
 v_lbl_col_hh[cliq_hh[[1]]] <- "white"
 v_lbl_col_hh[cliq_hh[[2]]] <- "white"
@@ -555,6 +575,101 @@ include_graphics(here("images", "P01I02-Kite-Cliques.png"))
 #### Code {.unlisted .unnumbered}
 
 ```{r 'P01-Plot-Kite-Cliques-A', eval=FALSE, ref.label=c('P01-Plot-Kite-Cliques')}
+#
+```
+
+## Community Detection & Modularity
+
+- Popular algorithms for finding structure in large graphs
+  - \textcolor{pink}{Walktrap} algorithm 
+    - It detects communities through a series of short random walks, with the idea that the nodes encountered on any given random walk are more likely to be within a community than not. 
+    - While edge betweenness started with the whole network and removed edges to create clusters, this algorithm initially treats all nodes as communities of their own, then merges them into communities, and these communities into larger communities, and so on.
+  - \textcolor{pink}{Fast Greedy} algorithm 
+    - The time walktrap algorithm takes to run grows with the square of the number of nodes times the number of edges $O(|V| |E|^2)$. 
+    - Fast greedy algorithm takes less time to run as the network size increases $O(|V| |E| \log{|V|})$.
+- \textcolor{pink}{Modularity} is one way to measure of the success of a community finding algorithm. 
+  - The higher the modularity, the more dense edges within groups are and the more sparse edges reaching outside of the groups are. i.e. \textcolor{pink}{Higher is Better}.
+
+
+```{r 'P01-Community'}
+bb <- kite
+# #Betweenness Centrality: Slow
+btw <- cluster_edge_betweenness(bb) 
+# #Modularity
+modularity(btw) |> round(3)
+# #Group Sizes
+sizes(btw)
+# #Groups
+setNames(btw$membership, nm = btw$names)
+#
+# #Walktrap Algorithm
+walk <- cluster_walktrap(bb)
+# #Modularity
+modularity(walk) |> round(3)
+# #Group Sizes
+sizes(walk)
+# #Groups
+setNames(walk$membership, nm = walk$names)
+#
+# #Fast Greedy Algorithm
+greed <- cluster_fast_greedy(bb)
+# #Modularity
+modularity(greed) |> round(3)
+# #Group Sizes
+sizes(greed)
+# #Groups
+setNames(greed$membership, nm = greed$names)
+```
+
+### Algorithms {.tabset .tabset-fade}
+
+#### Plot {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-Communities', include=FALSE}
+hh <- kite
+hh_b <- cluster_edge_betweenness(hh) 
+hh_w <- cluster_walktrap(hh)
+hh_g <- cluster_fast_greedy(hh)
+#
+#ttl_hh <- "Krackhardt Kite: Communities" 
+ttl_hh_b <- "Kite: Betweenness" 
+ttl_hh_w <- "Kite: Walktrap" 
+ttl_hh_g <- "Kite: Fast Greedy" 
+cap_hh <- "P01I03"
+loc_png <- here("images", "P01I03-Kite-Communities.png") 
+#
+if(!file.exists(loc_png)) {
+  png(filename = loc_png, width = q_png_w_w, height = q_png_w_h, units = "in", res = q_dpi_w)
+  #dev.control('enable') 
+  def_par <- par(no.readonly = TRUE) #Save Default
+  par(mfrow = c(2, 3), mar = c(0,0,0,0))
+  plot(x = hh_b, y = hh)
+  title(main = ttl_hh_w, line = -2, adj = 0.5)
+  plot(x = hh_w, y = hh)
+  title(main = ttl_hh_b, line = -2, adj = 0.5)
+  plot(x = hh_g, y = hh)
+  title(main = ttl_hh_g, line = -2, adj = 0.5)
+  plot_dendrogram(x = hh_b, cex = 2)
+  plot_dendrogram(x = hh_w, cex = 2)
+  plot_dendrogram(x = hh_g, cex = 2)
+  par(def_par)  #Reset Default
+  title(sub = cap_hh, line = 4, adj = 1)
+  P01 <- recordPlot()
+  dev.off()
+  #par(mfrow = c(1, 1)) #Default
+  assign(cap_hh, P01)
+  rm(P01)
+  #eval(parse(text = cap_hh))
+}
+```
+
+```{r 'P01I03', echo=FALSE, out.width='100%', fig.cap="(P01I03) Krackhardt Kite: Communities"}
+include_graphics(here("images", "P01I03-Kite-Communities.png"))
+```
+
+#### Code {.unlisted .unnumbered}
+
+```{r 'P01-Plot-Kite-Communities-A', eval=FALSE, ref.label=c('P01-Plot-Kite-Communities')}
 #
 ```
 
