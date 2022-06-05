@@ -49,4 +49,5 @@ if (!("conflicted" %in% (.packages()))) {
   rm(pkg)
   # #Provide the path to the specific Python binary.
   use_python("C:\\Softwares\\Python\\Python310\\python.exe", required = TRUE)
-} else print("Packages not loaded again.")
+  #reticulate::source_python(here::here("code", "B01Modules.py"))
+} else print("R Packages not loaded again.")
