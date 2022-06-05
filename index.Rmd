@@ -40,17 +40,17 @@ Shivam Upadhyay
 
 <!-- This is a comment. -->
 
-```{r '000A', include=FALSE, cache=FALSE}
+```{r '000A', decorate=TRUE, include=FALSE, cache=FALSE}
 # #Knitr Setup, Packages, Functions. Each checks the environment and runs only once.
 sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
-reticulate::source_python(here::here("code", "B01Modules.py"))
+reticulate::source_python(here::here("code", "B01Modules.py"), convert = FALSE)
 ```
 
 ### R Version {.unlisted .unnumbered}
 
-```{r '000V-R'}
+```{r '000V-R', decorate=TRUE}
 # #R Version
 R.version.string
 stopifnot(all(R.version$major >= 4, R.version$minor >= 2))
@@ -58,7 +58,7 @@ stopifnot(all(R.version$major >= 4, R.version$minor >= 2))
 
 ### Python {.unlisted .unnumbered}
 
-```{python '000V-Python'}
+```{python '000V-Python', decorate=TRUE}
 # #Python Version
 if(True): print(sys.version)
 if((3, 10) > sys.version_info): sys.exit("Python Version is lower than 3.10 !")
@@ -67,31 +67,31 @@ if((3, 10) > sys.version_info): sys.exit("Python Version is lower than 3.10 !")
 
 ### Pandoc {.unlisted .unnumbered}
 
-```{r '000V-Pandoc'}
+```{r '000V-Pandoc', decorate=TRUE}
 # #Pandoc Version
 rmarkdown::pandoc_version()
 ```
 
 ### Working Directory {.unlisted .unnumbered}
 
-```{r '000D-Directory'}
+```{r '000D-Directory', decorate=TRUE}
 # #Working Directory
 getwd()
 ```
 
 ### Configurations {.unlisted .unnumbered}
 
-```{r '000C-R-Session'}
+```{r '000C-R-Session', decorate=TRUE}
 # #Version information about R, the OS and attached or loaded packages
 sessionInfo()
 ```
 
-```{r '000B-Python-Configuration'}
+```{r '000B-Python-Configuration', decorate=TRUE}
 # #Python Configuration
 py_config()
 ```
 
-```{r '000G-Bib', include=FALSE}
+```{r '000G-Bib', decorate=TRUE, include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown'
@@ -100,11 +100,11 @@ knitr::write_bib(c(
 
 <!-- ## Validation {.unlisted .unnumbered .tabset .tabset-fade} -->
 
-```{r '000X-Cleanup', include=FALSE, cache=FALSE}
+```{r '000X-R-Cleanup', decorate=TRUE, include=FALSE, cache=FALSE}
 if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll)
 ```
 
-```{r '000Z-Validation', include=FALSE, cache=FALSE}
+```{r '000Z-R-Validation', decorate=TRUE, include=FALSE, cache=FALSE}
 # #SUMMARISED Packages and Objects (BOOK CHECK)
 f_()
 #
