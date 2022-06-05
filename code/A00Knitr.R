@@ -67,30 +67,33 @@ if (!("q_start" %in% ls(envir = .GlobalEnv))) {
   knitr::knit_hooks$set(decorate = function(before, options) {
     if (before) {
       q_engine <- options$engine
-      if (q_engine == "python") {
-          label <- "<b> Python</b>"
-          bc <- "#417FB1"
-          sz <- "100%"
-          tc <- "#FFD94C"
-          icon <- fa("python", fill = tc)
-      } else if (q_engine == "R") {
-          label <- "<b> R</b>"
-          bc <- "#4C78DB"
-          sz <- "100%"
-          tc <- "#ffffff"
-          icon <- fa("r-project", fill = tc)
-      } #else if (options$engine == "bash") {
-      #    label <- "<b>Shell</b>"
-      #    bc <- "#000000"
-      #    sz <- "100%"
-      #    tc <- "#ffffff"
-      #    icon <- "<i class=\"fas fa-terminal\"></i>"
+      #q_eng_v  <- c("R", "python")
+      #if (q_engine %in% q_eng_v) {
+        if (q_engine == "python") {
+            label <- "<b> Python</b>"
+            bc <- "#417FB1"
+            sz <- "100%"
+            tc <- "#FFD94C"
+            icon <- fa("python", fill = tc)
+        } else if (q_engine == "R") {
+            label <- "<b> R</b>"
+            bc <- "#4C78DB"
+            sz <- "100%"
+            tc <- "#ffffff"
+            icon <- fa("r-project", fill = tc)
+        } #else if (options$engine == "bash") {
+        #    label <- "<b>Shell</b>"
+        #    bc <- "#000000"
+        #    sz <- "100%"
+        #    tc <- "#ffffff"
+        #    icon <- "<i class=\"fas fa-terminal\"></i>"
+        #}
+        paste0("<div class=decocode>", "<div style=\"background-color:", bc,
+               "\">", "<span style=\"font-size:", sz, ";color:", tc, "\">", icon, label, "</span>")
       #}
-      paste0("<div class=decocode>", "<div style=\"background-color:", bc,
-             "\">", "<span style=\"font-size:", sz, ";color:", tc, "\">", icon, label, "</span>")
     } else {
         "</div><br></div>"
     }
   })
-} else print("Knitr not loaded again.")
+} else print("R Knitr Setup not loaded again.")
 
