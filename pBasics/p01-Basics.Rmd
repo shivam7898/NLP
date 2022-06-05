@@ -67,16 +67,15 @@ print(p01kite_np_y)
 
 ### CSV to Python {.unlisted .unnumbered}
 
-```{python 'P01-Y-CSV-Kite', decorate=TRUE, eval=FALSE}
-#xxxx
-#loc_src = "./../data/P01-Kite.csv"
-#p01kite_y = pd.read_csv(loc_src)
-##
-## #Drop a Column
-#pp = p01kite_y.copy()
-#pp.drop(columns = ['Nodes'], inplace = True)
-#pp
-#exit
+```{python 'P01-Y-CSV-Kite', decorate=TRUE}
+# #If TRUE (Build, Knit, Console), Else (Manual Chunk)
+loc_src = "./data/P01-Kite.csv" if os.path.isdir("data") else "./../data/P01-Kite.csv"
+p01kite_y = pd.read_csv(loc_src)
+#
+# #Drop a Column
+pp = p01kite_y.copy()
+pp.drop(columns = ['Nodes'], inplace = True)
+print(pp)
 
 ```
 
