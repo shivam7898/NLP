@@ -1,10 +1,10 @@
 # NLP Basics {#p01}
 
-```{r 'P01', include=FALSE, cache=FALSE}
+```{r 'P01-R', decorate=TRUE, include=FALSE, cache=FALSE}
 sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
-reticulate::source_python(here::here("code", "B01Modules.py"))
+#reticulate::source_python(here::here("code", "B01Modules.py"))
 ```
 
 ## Data: Krackhardt Kite {#kite-p01 .tabset .tabset-fade}
@@ -15,7 +15,7 @@ reticulate::source_python(here::here("code", "B01Modules.py"))
 
 - About: 18 Edges and 10 Vertices
 
-```{r 'P01-CSV-Kite', include=FALSE}
+```{r 'P01-R-CSV-Kite', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-Kite.csv")
 loc_rds <- here("data", "P01-Kite.rds")
 if(!file.exists(loc_rds)) {
@@ -33,24 +33,24 @@ if(!file.exists(loc_rds)) {
 }
 ```
 
-```{r 'P01-Structure-Kite', decorate=TRUE}
+```{r 'P01-R-Structure-Kite', decorate=TRUE}
 str(p01kite)
 ```
 
-### Import R {.unlisted .unnumbered}
+### CSV to R {.unlisted .unnumbered}
 
-```{r 'P01-CSV-Kite-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-CSV-Kite')}
-# #Ref another file chunk
+```{r 'P01-R-CSV-Kite-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-CSV-Kite')}
+#
 ```
 
 ### R to Python {.unlisted .unnumbered}
 
-```{r 'P01-R2Y-Kite-Prep', decorate=TRUE}
+```{r 'P01-R-R2Y-Kite', decorate=TRUE}
 # #R Matrix | R DataFrame |
 p01kite_df_r <- as.data.frame(p01kite, row.names = FALSE)
 ```
 
-```{python 'P01-R2Y-Kite', decorate=TRUE}
+```{python 'P01-Y-R2Y-Kite', decorate=TRUE}
 # #R Matrix | R DataFrame | Pandas DataFrame | Copy | NumPy Structured Array | 
 p01kite_pd_y = r.p01kite_df_r
 pp = p01kite_pd_y.copy()
@@ -62,7 +62,8 @@ p01kite_np_y
 
 ### CSV to Python {.unlisted .unnumbered}
 
-```{python 'P01-CSV-Kite-Y', decorate=TRUE}
+```{python 'P01-Y-CSV-Kite', decorate=TRUE, eval=FALSE}
+#xxxx
 loc_src = "./../data/P01-Kite.csv"
 p01kite_y = pd.read_csv(loc_src)
 #
@@ -70,8 +71,8 @@ p01kite_y = pd.read_csv(loc_src)
 pp = p01kite_y.copy()
 pp.drop(columns = ['Nodes'], inplace = True)
 pp
-```
 
+```
 
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 
@@ -81,7 +82,7 @@ pp
 
 - About: Edges and Vertices of a Class Network at Week 1 and Week 4
 
-```{r 'P01-XL-KM-1', include=FALSE}
+```{r 'P01-R-XL-KM-1', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-KM-Week1.xlsx")
 loc_rds <- here("data", "P01-KM-Week1.rds")
 if(FALSE | !file.exists(loc_rds)) {
@@ -125,8 +126,7 @@ if(FALSE | !file.exists(loc_rds)) {
 }
 ```
 
-
-```{r 'P01-XL-KM-4', include=FALSE}
+```{r 'P01-R-XL-KM-4', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-KM-Week4.xlsx")
 loc_rds <- here("data", "P01-KM-Week4.rds")
 if(FALSE | !file.exists(loc_rds)) {
@@ -170,7 +170,7 @@ if(FALSE | !file.exists(loc_rds)) {
 }
 ```
 
-```{r 'P01-Dimensions-KM'}
+```{r 'P01-R-Dimensions-KM', decorate=TRUE}
 # #Dimensions of Each Sheet: Row 1 (Rows), Row 2 (Columns), Columns (Sheets)
 vapply(p01km_1, dim, numeric(2))
 vapply(p01km_4, dim, numeric(2))
@@ -178,32 +178,32 @@ vapply(p01km_4, dim, numeric(2))
 
 ### Structure {.unlisted .unnumbered}
 
-```{r 'P01-Structure-KM'}
+```{r 'P01-R-Structure-KM', decorate=TRUE}
 str(p01km_1)
 str(p01km_4)
 ```
 
 ### Summary {.unlisted .unnumbered}
 
-```{r 'P01-Summary-KM'}
+```{r 'P01-R-Summary-KM', decorate=TRUE}
 # #Summary of List Objects
 lapply(p01km_1, summary)
 lapply(p01km_4, summary)
 ```
 
-### Import {.unlisted .unnumbered}
+### XL to R {.unlisted .unnumbered}
 
-```{r 'P01-XL-KM-1-A', eval=FALSE, ref.label=c('P01-XL-KM-1')}
-# #Ref another file chunk
+```{r 'P01-R-XL-KM-1-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-XL-KM-1')}
+#
 ```
 
-```{r 'P01-XL-KM-4-A', eval=FALSE, ref.label=c('P01-XL-KM-4')}
-# #Ref another file chunk
+```{r 'P01-R-XL-KM-4-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-XL-KM-4')}
+#
 ```
 
 ### ETC {.unlisted .unnumbered}
 
-```{r 'P01-ETC', include=TRUE, eval=FALSE}
+```{r 'P01-R-ETC', decorate=TRUE, include=TRUE, eval=FALSE}
 # #Count NA in Columns
 if(FALSE) colSums(is.na(bb)) |> as_tibble(rownames = "Cols") |> filter(value > 0)
 # #Subset Rows
@@ -233,13 +233,11 @@ if(FALSE) contrasts(bb$Married)
 if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
-
 ## Network
 
 ```{definition 'Network'}
 A \textcolor{pink}{network} is a collection of entities and their relationships to one another. The entities that are connected are called \textcolor{pink}{nodes (vertices)}. The connections between the vertices are called \textcolor{pink}{edges (links)}.
 ```
-
 
 ## Kite
 
@@ -262,7 +260,7 @@ A \textcolor{pink}{network} is a collection of entities and their relationships 
     - (e/n) - edge-level numeric attribute
 
 
-```{r 'P01-iGraph-Kite'}
+```{r 'P01-R-iGraph-Kite', decorate=TRUE}
 bb <- p01kite
 # #Get iGraph (Undirected) from Adjacency Matrix
 u_kite <- graph_from_adjacency_matrix(bb, mode = "undirected")
@@ -284,7 +282,7 @@ stopifnot(all(identical(bb, ii), identical(bb, jj)))
 
 ### Layout
 
-```{r 'P01-Layout-Kite'}
+```{r 'P01-R-Layout-Kite', decorate=TRUE}
 # #Attaching a default layout to the Network for ease of comparison
 if(FALSE) {
   # #Generate a Layout Matrix of Coordinates
@@ -301,7 +299,7 @@ graph_attr(kite, "layout") <- matrix(c(9.8, 11.1, 9.3, 10.6, 11.9, 10.4, 11.5, 1
 
 ### Vertices or Nodes
 
-```{r 'P01-Vertices-Kite'}
+```{r 'P01-R-Vertices-Kite', decorate=TRUE}
 # #Count Vertices
 vcount(kite)
 #
@@ -311,7 +309,7 @@ V(kite)
 
 ### Edges or Links
 
-```{r 'P01-Edges-Kite'}
+```{r 'P01-R-Edges-Kite', decorate=TRUE}
 # #Count Edges
 ecount(kite)
 #
@@ -321,7 +319,7 @@ E(kite)
 
 ### Edgelist & iGraph
 
-```{r 'P01-EdgeList-Kite'}
+```{r 'P01-R-EdgeList-Kite', decorate=TRUE}
 bb <- kite
 #
 # #Get Edgelist from iGraph
@@ -345,8 +343,7 @@ ll
 - The \textcolor{pink}{shortest paths} matrix shows us the minimum number of edges between each member (degrees of separation)
   - The shortest path length from a vertex to itself is always zero. 
 
-
-```{r 'P01-Shortest-Paths-Kite'}
+```{r 'P01-R-Shortest-Paths-Kite', decorate=TRUE}
 # #Histogram of the shortest path length between each pair of vertices.
 distance_table(kite)
 #
@@ -354,13 +351,12 @@ distance_table(kite)
 distances(kite, mode = "all")
 ```
 
-
 ### Diameter
 
 - The \textcolor{pink}{diameter} of a network tells us the number of edges between the most distant members
   - The diameter of a graph is the length of the longest geodesic.
-  
-```{r 'P01-Diameter-Kite'}
+
+```{r 'P01-R-Diameter-Kite', decorate=TRUE}
 # #Diameter
 diameter(kite)
 #
@@ -372,7 +368,7 @@ farthest_vertices(kite)
 
 - \textcolor{pink}{Reciprocity} is the ratio of the number of reciprocated edges to the number of total edges.
 
-```{r 'P01-Reciprocity-Kite'}
+```{r 'P01-R-Reciprocity-Kite', decorate=TRUE}
 # #Reciprocity
 reciprocity(kite)
 ```
@@ -381,18 +377,16 @@ reciprocity(kite)
 
 - The \textcolor{pink}{density} or 'Clustering Coefficient' of a graph is the ratio of the number of edges and the number of possible edges.
 
-
-```{r 'P01-Density-Kite'}
+```{r 'P01-R-Density-Kite', decorate=TRUE}
 # #Density
 edge_density(kite)
 ```
-
 
 ### Network {.tabset .tabset-fade}
 
 #### Plot {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite', include=FALSE}
+```{r 'P01-R-Plot-Kite', decorate=TRUE, include=FALSE}
 hh <- kite
 #
 # #Use Degrees of each node to indicate size
@@ -455,7 +449,7 @@ include_graphics(here("images", "P01I01-Kite.png"))
 
 #### Code {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite-A', eval=FALSE, ref.label=c('P01-Plot-Kite')}
+```{r 'P01-R-Plot-Kite-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-Plot-Kite')}
 #
 ```
 
@@ -465,7 +459,7 @@ include_graphics(here("images", "P01I01-Kite.png"))
 
 - The \textcolor{pink}{degree} of a vertex is the number connections (adjacent edges) for a node
 
-```{r 'P01-Centrality-Degree-Kite'}
+```{r 'P01-R-Centrality-Degree-Kite', decorate=TRUE}
 # #Vector of each Vertex Degree: mode = c("all", "out", "in", "total")
 degree(kite, mode = "all")
 ```
@@ -475,7 +469,7 @@ degree(kite, mode = "all")
 - \textcolor{pink}{Closeness centrality} measures how many steps is required to access every other vertex from a given vertex.
   - Normalized closeness centrality shows the inverse of the number of edges to all other nodes in the graph (e.g. a value of .5 means an average of two edges)
 
-```{r 'P01-Centrality-Closeness-Kite'}
+```{r 'P01-R-Centrality-Closeness-Kite', decorate=TRUE}
 # #Vector of each Vertex Closeness: mode = c("all", "out", "in", "total")
 closeness(kite, mode = "all", normalized = TRUE) |> round(3)
 ```
@@ -485,7 +479,7 @@ closeness(kite, mode = "all", normalized = TRUE) |> round(3)
 - \textcolor{pink}{Betweenness centrality} shows the number of shortest paths a node is on between pairs of other nodes. 
   - If multiple shortest paths between two nodes exist the betweenness is shared among all the intermediate nodes
 
-```{r 'P01-Centrality-Betweenness-Kite'}
+```{r 'P01-R-Centrality-Betweenness-Kite', decorate=TRUE}
 # #Betweenness returns a 'communities' object
 ii <- cluster_edge_betweenness(kite) 
 attributes(ii)
@@ -510,8 +504,7 @@ ii[[1]]
   - In general, vertices with high eigenvector centralities are those which are connected to many other vertices which are, in turn, connected to many others.
   - It is a recursive measure of centrality, measuring each node by not only the number of connections it has, but weighting that metric by how many connections its connections have, which are in turn weighted by their connections etc. 
 
-
-```{r 'P01-Centrality-Eigenvector-Kite'}
+```{r 'P01-R-Centrality-Eigenvector-Kite', decorate=TRUE}
 # #List of Eigenvector and Eigenvalue Score
 ii <- eigen_centrality(kite) 
 #
@@ -526,7 +519,7 @@ ii$value
 
 - Residual of Simple Linear Regression can be used to size the nodes in our network. This may identify nodes which are connected to only a few nodes, which are "important" i.e. they have high eigenvector centrality.
 
-```{r 'P01-Degree-Eigenvector-Kite'}
+```{r 'P01-R-Degree-Eigenvector-Kite', decorate=TRUE}
 bb <- kite
 ii_deg <- degree(bb, mode = "all")
 ii_egn <- eigen_centrality(bb)$vector
@@ -548,8 +541,7 @@ ii |> add_column(Residual = ii_res) |> mutate(Size = abs(Residual)*100)
     - Two nodes with coreness of 3 may not be connected at all and may be in separate k-cores.
   - NOTE: Directed graphs will be considered as Undirected ones for Cliques calculation
   
-
-```{r 'P01-Cliques-Kite'}
+```{r 'P01-R-Cliques-Kite', decorate=TRUE}
 bb <- kite
 # #Max Cliques with Lengths
 summary(max_cliques(bb))[, 1]
@@ -563,7 +555,8 @@ coreness(bb)
 
 #### Plot {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite-Cliques', include=FALSE}
+
+```{r 'P01-R-Plot-Kite-Cliques', decorate=TRUE, include=FALSE}
 hh <- kite
 #
 # #Get Largest Cliques
@@ -603,7 +596,7 @@ include_graphics(here("images", "P01I02-Kite-Cliques.png"))
 
 #### Code {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite-Cliques-A', eval=FALSE, ref.label=c('P01-Plot-Kite-Cliques')}
+```{r 'P01-R-Plot-Kite-Cliques-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-Plot-Kite-Cliques')}
 #
 ```
 
@@ -620,7 +613,7 @@ include_graphics(here("images", "P01I02-Kite-Cliques.png"))
   - The higher the modularity, the more dense edges within groups are and the more sparse edges reaching outside of the groups are. i.e. \textcolor{pink}{Higher is Better}.
 
 
-```{r 'P01-Community'}
+```{r 'P01-R-Community', decorate=TRUE}
 bb <- kite
 # #Betweenness Centrality: Slow
 btw <- cluster_edge_betweenness(bb) 
@@ -654,7 +647,7 @@ setNames(greed$membership, nm = greed$names)
 
 #### Plot {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite-Communities', include=FALSE}
+```{r 'P01-R-Plot-Kite-Communities', decorate=TRUE, include=FALSE}
 hh <- kite
 hh_b <- cluster_edge_betweenness(hh) 
 hh_w <- cluster_walktrap(hh)
@@ -698,18 +691,17 @@ include_graphics(here("images", "P01I03-Kite-Communities.png"))
 
 #### Code {.unlisted .unnumbered}
 
-```{r 'P01-Plot-Kite-Communities-A', eval=FALSE, ref.label=c('P01-Plot-Kite-Communities')}
+```{r 'P01-R-Plot-Kite-Communities-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-Plot-Kite-Communities')}
 #
 ```
 
-
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
-```{r 'P01-Cleanup', include=FALSE, cache=FALSE}
+```{r 'P01-R-Cleanup', decorate=TRUE, include=FALSE, cache=FALSE}
 if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll, loc_rds, loc_src, names_ii, p01km_1, p01km_4)
 ```
 
-```{r 'P01-Validation', include=TRUE, cache=FALSE}
+```{r 'P01-R-Validation', decorate=TRUE, include=TRUE, cache=FALSE}
 # #SUMMARISED Packages and Objects (BOOK CHECK)
 f_()
 #
