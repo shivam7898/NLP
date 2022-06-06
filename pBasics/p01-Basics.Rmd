@@ -14,9 +14,9 @@ knit_exit()
 
 ## Data: Krackhardt Kite {#kite-p01 .tabset .tabset-fade}
 
-### Glance {.unlisted .unnumbered}
+### Glance R {.unlisted .unnumbered}
 
-\textcolor{pink}{Please import the "P01-KM-Week1.xlsx" and "P01-KM-Week4.xlsx"}
+\textcolor{pink}{Please import the "P01-Kite.csv"}
 
 - About: 18 Edges and 10 Vertices
 
@@ -70,18 +70,47 @@ print(p01kite_np_y)
 ```{python 'P01-Y-CSV-Kite', decorate=TRUE}
 # #If TRUE (Build, Knit, Console), Else (Manual Chunk)
 loc_src = "./data/P01-Kite.csv" if os.path.isdir("data") else "./../data/P01-Kite.csv"
-p01kite_y = pd.read_csv(loc_src)
-#
-# #Drop a Column
-pp = p01kite_y.copy()
+# #Read Adjacency Matrix from CSV
+pp = pd.read_csv(loc_src)
+# #Drop Columns
 pp.drop(columns = ['Nodes'], inplace = True)
-print(pp)
+# #Copy
+p01kite_y = pp.copy()
+#
+# #Type
+print(type(p01kite_y))
+# #Print
+print(p01kite_y)
+
+```
+
+### Glance Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Glance', decorate=TRUE}
+# #Type, Shape, All Column Names, Null Count, Drop NA, Column Type, Head, Numeric Column Summary
+pp = p01kite_y.copy()
+print(type(pp))
+
+pp.shape
+
+print(pp.columns.tolist())
+print(pp.columns.values)
+
+print(pp.isnull().sum())
+
+pp = pp.dropna()
+
+pp.info()
+
+pp.head(n = 3)
+
+pp.describe()
 
 ```
 
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 
-### Glance {.unlisted .unnumbered}
+### Glance R {.unlisted .unnumbered}
 
 \textcolor{pink}{Please import the "P01-KM-Week1.xlsx" and "P01-KM-Week4.xlsx"}
 
@@ -181,14 +210,14 @@ vapply(p01km_1, dim, numeric(2))
 vapply(p01km_4, dim, numeric(2))
 ```
 
-### Structure {.unlisted .unnumbered}
+### Structure R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Structure-KM', decorate=TRUE}
 str(p01km_1)
 str(p01km_4)
 ```
 
-### Summary {.unlisted .unnumbered}
+### Summary R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Summary-KM', decorate=TRUE}
 # #Summary of List Objects
