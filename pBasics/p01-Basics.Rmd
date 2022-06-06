@@ -23,7 +23,7 @@ knit_exit()
 ```{r 'P01-R-CSV-Kite', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-Kite.csv")
 loc_rds <- here("data", "P01-Kite.rds")
-if(!file.exists(loc_rds)) {
+if(FALSE | !file.exists(loc_rds)) {
   # #Read Adjacency Matrix from CSV
   aa <- read_csv(loc_src, show_col_types = FALSE)
   # #Columns To RowNames | Named Matrix |
@@ -69,7 +69,8 @@ print(p01kite_np_y)
 
 ```{python 'P01-Y-CSV-Kite', decorate=TRUE}
 # #If TRUE (Build, Knit, Console), Else (Manual Chunk)
-loc_src = "./data/P01-Kite.csv" if os.path.isdir("data") else "./../data/P01-Kite.csv"
+loc_src = "data/P01-Kite.csv"
+loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
 # #Read Adjacency Matrix from CSV
 pp = pd.read_csv(loc_src)
 # #Drop Columns
@@ -267,6 +268,89 @@ if(FALSE) contrasts(bb$Married)
 if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
+### XL to Python {.unlisted .unnumbered}
+
+```{r 'P01-R-', decorate=TRUE}
+p01km_1
+```
+
+```{python 'P01-Y-XL-KM-1', decorate=TRUE}
+loc_src = "data/P01-KM-Week1.xlsx"
+loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
+# #Read Excel Sheets as Dictionary of DataFrames
+pp = pd.read_excel(loc_src, sheet_name = None)
+
+# #Type
+print(type(pp))
+
+# #Number of Sheets
+len(pp)
+
+# #Names of Sheets
+print(pp.keys())
+
+# #Type of Dictionary Elements
+print(type(pp['Edges']))
+print(type(pp['Vertices']))
+
+# #Copy for Modifications: Edges
+qq = pp['Edges'].copy()
+
+# #Column Headers of Key Edges
+print(qq.columns.tolist())
+
+# #Rename Headers of Key Edges by mapping old names to new names
+qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
+
+# #Convert Some Columns to String using subset selection
+qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
+
+# #Replace specific values in columns
+qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
+qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
+qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
+qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
+
+# #Get a list of column names of specific datatype
+cols = qq.select_dtypes(include=['object']).columns.to_list()
+# #Coerce multiple columns having their column names in a list
+qq[cols] = qq[cols].astype('category')
+
+# #Save the Modifications back to Original
+pp['Edges'] = qq
+
+# #Copy for Modifications: Vertices
+qq = pp['Vertices'].copy()
+
+# #Column Headers of Key Vertices
+old_names = qq.columns.tolist()
+print(old_names)
+
+# #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
+new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
+qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
+print(qq.columns.tolist())
+
+# #Replace a Value in Multiple Columns
+cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
+qq[cols] = qq[cols].replace({'x':'Yes'})
+
+# #Replace NaN in Multiple Columns
+qq[cols] = qq[cols].fillna('No')
+
+# #Get a list of column names of specific datatype
+cols = qq.select_dtypes(include = ['object']).columns.to_list()
+# #Coerce multiple columns having their column names in a list
+qq[cols] = qq[cols].astype('category')
+
+# #Save the Modifications back to Original
+pp['Vertices'] = qq
+
+# #Save a deepcopy
+p01km_1_y = copy.deepcopy(pp)
+
+```
+
 ## Network
 
 ```{definition 'Network'}
@@ -458,7 +542,7 @@ ttl_hh <- "Krackhardt Kite: Degrees, Diameter, and Distances from D"
 cap_hh <- "P01I01"
 loc_png <- here("images", "P01I01-Kite.png") 
 #
-if(!file.exists(loc_png)) {
+if(FALSE | !file.exists(loc_png)) {
   png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
   #dev.control('enable') 
   plot(hh, vertex.size = size_hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, 
@@ -610,7 +694,7 @@ ttl_hh <- "Krackhardt Kite: Cliques"
 cap_hh <- "P01I02"
 loc_png <- here("images", "P01I02-Kite-Cliques.png") 
 #
-if(!file.exists(loc_png)) {
+if(FALSE | !file.exists(loc_png)) {
   png(filename = loc_png, width = q_png_w, height = q_png_h, units = "in", res = q_dpi)
   #dev.control('enable') 
   plot(hh, vertex.color = v_col_hh, vertex.label.color = v_lbl_col_hh, mark.groups = cliq_hh)
@@ -694,7 +778,7 @@ ttl_hh_g <- "Kite: Fast Greedy"
 cap_hh <- "P01I03"
 loc_png <- here("images", "P01I03-Kite-Communities.png") 
 #
-if(!file.exists(loc_png)) {
+if(FALSE | !file.exists(loc_png)) {
   png(filename = loc_png, width = q_png_w_w, height = q_png_w_h, units = "in", res = q_dpi_w)
   #dev.control('enable') 
   def_par <- par(no.readonly = TRUE) #Save Default
