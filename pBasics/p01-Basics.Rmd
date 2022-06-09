@@ -5,6 +5,7 @@ sys.source(here::here("code", "A00Knitr.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
 reticulate::source_python(here::here("code", "B01Modules.py"), convert = FALSE)
+sys.source(here::here("code", "A04PackagesPython.R"), envir = knitr::knit_global())
 ```
 
 ```{r 'P01-R-Limit-Knit-Build', decorate=TRUE, include=FALSE, eval=FALSE}
@@ -22,24 +23,25 @@ knit_exit()
 
 ```{r 'P01-R-CSV-Kite', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-Kite.csv")
-loc_rds <- here("data", "P01-Kite.rds")
-if(FALSE | !file.exists(loc_rds)) {
-  # #Read Adjacency Matrix from CSV
+loc_bin <- here("data", "P01-R-Kite.feather")
+#
+if(FALSE | !file.exists(loc_bin)) {
+  # #Read Adjacency Matrix from CSV 
   aa <- read_csv(loc_src, show_col_types = FALSE)
-  # #Columns To RowNames | Named Matrix |
-  aa <- aa |> 
-    column_to_rownames(var = "Nodes") |> 
-    as.matrix.data.frame(rownames.force = TRUE)
-  # #Save
-  p01kite <- aa
-  saveRDS(p01kite, loc_rds)
-} else { 
-  p01kite <- aa <- readRDS(loc_rds)
+  # #Drop Column | Coercion |
+  aa <- aa |> select(-Nodes) |> mutate(across(everything(), as.integer))
+  # #Save as Feather
+  write_feather(aa, loc_bin)
+} else {# #Read Feather
+  aa <- read_feather(loc_bin)
 }
+
+# #Copy
+p01r_kite <- aa
 ```
 
 ```{r 'P01-R-Structure-Kite', decorate=TRUE}
-str(p01kite)
+str(p01r_kite)
 ```
 
 ### CSV to R {.unlisted .unnumbered}
@@ -48,40 +50,35 @@ str(p01kite)
 #
 ```
 
-### R to Python {.unlisted .unnumbered}
-
-```{r 'P01-R-R2Y-Kite', decorate=TRUE}
-# #R Matrix | R DataFrame |
-p01kite_df_r <- as.data.frame(p01kite, row.names = FALSE)
-```
-
-```{python 'P01-Y-R2Y-Kite', decorate=TRUE}
-# #R Matrix | R DataFrame | Pandas DataFrame | Copy | NumPy Structured Array | 
-p01kite_pd_y = r.p01kite_df_r
-pp = p01kite_pd_y.copy()
-qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.dtypes.items()))
-p01kite_np_y = qq.copy()
-print(p01kite_np_y)
-
-```
-
 ### CSV to Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-CSV-Kite', decorate=TRUE}
-# #If TRUE (Build, Knit, Console), Else (Manual Chunk)
 loc_src = "data/P01-Kite.csv"
-loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
-# #Read Adjacency Matrix from CSV
-pp = pd.read_csv(loc_src)
-# #Drop Columns
-pp.drop(columns = ['Nodes'], inplace = True)
+loc_bin = "data/P01-Y-Kite.feather"
+if(os.path.isdir("data")):
+    # #If TRUE (Build, Knit, Console), Else (Manual Chunk)
+    #loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
+    loc_src = "./" + loc_src
+    loc_bin = "./" + loc_bin
+else:
+    loc_src = "./../" + loc_src
+    loc_bin = "./../" + loc_bin
+
+if(False or not(os.path.exists(loc_bin))):
+    # #Read Adjacency Matrix from CSV using Pandas
+    pp = pd.read_csv(loc_src)
+    # #Drop Columns
+    pp.drop(columns = ['Nodes'], inplace = True)
+    # #Coercion
+    pp = pp.astype(np.int32)
+    # #Save as Feather
+    pyarrow.feather.write_feather(pp, loc_bin)
+else:
+    # #Read Feather
+    pp = pd.read_feather(loc_bin)
+
 # #Copy
-p01kite_y = pp.copy()
-#
-# #Type
-print(type(p01kite_y))
-# #Print
-print(p01kite_y)
+p01y_kite = pp.copy()
 
 ```
 
@@ -89,7 +86,7 @@ print(p01kite_y)
 
 ```{python 'P01-Y-Glance', decorate=TRUE}
 # #Type, Shape, All Column Names, Null Count, Drop NA, Column Type, Head, Numeric Column Summary
-pp = p01kite_y.copy()
+pp = p01y_kite.copy()
 print(type(pp))
 
 pp.shape
@@ -109,6 +106,57 @@ pp.describe()
 
 ```
 
+### R to Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-R2Y-Kite', decorate=TRUE}
+# #R DataFrame | Pandas DataFrame | Copy | NumPy Structured Array | 
+p01y_kite_pd = r.p01r_kite
+# #Verify that DataFrame Copied from R Matches the one in Python
+assert(p01y_kite_pd.equals(p01y_kite))
+#
+pp = p01y_kite_pd.copy()
+qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.dtypes.items()))
+p01y_kite_np = qq.copy()
+print(p01y_kite_np)
+del(p01y_kite_pd, p01y_kite_np)
+
+```
+
+### Python to R {.unlisted .unnumbered}
+
+```{r 'P01-R-Y2R-Kite', decorate=TRUE}
+p01r_kite_tbl <- py$p01y_kite |> 
+  mutate(across(where(is.numeric), as.integer)) |> 
+  `attr<-`("pandas.index", NULL) |> as_tibble()
+# #Verify that DataFrame Copied from Python Matches the one in R
+stopifnot(identical(p01r_kite_tbl, p01r_kite))
+# #DataFrame to Matrix
+p01r_kite_mat <- as.matrix.data.frame(p01r_kite)
+print(p01r_kite_mat)
+rm(p01r_kite_tbl, p01r_kite_mat)
+```
+
+### Feather: R & Python {.unlisted .unnumbered}
+
+```{r 'P01-R-Match-Feather', decorate=TRUE}
+# #Read in R the Feather file that was written by Python
+loc_bin <- here("data", "P01-Y-Kite.feather")
+aa <- read_feather(loc_bin)
+stopifnot(identical(aa, p01r_kite))
+str(aa)
+```
+
+```{python 'P01-Y-Match-Feather', decorate=TRUE}
+# #Read in Python the Feather file that was written by R
+loc_bin = "data/P01-R-Kite.feather"
+loc_bin = "./" + loc_bin if os.path.isdir("data") else "./../" + loc_bin
+pp = pd.read_feather(loc_bin)
+assert(pp.equals(p01y_kite))
+pp.info()
+
+```
+
+
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 
 ### Glance R {.unlisted .unnumbered}
@@ -119,7 +167,7 @@ pp.describe()
 
 ```{r 'P01-R-XL-KM-1', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-KM-Week1.xlsx")
-loc_rds <- here("data", "P01-KM-Week1.rds")
+loc_rds <- here("data", "P01-R-KM-Week1.rds")
 if(FALSE | !file.exists(loc_rds)) {
   names_aa <- c("Edges", "Vertices")
   # #Verify Excel
@@ -154,16 +202,16 @@ if(FALSE | !file.exists(loc_rds)) {
   aa$Vertices <- bb
   #
   # #Save
-  p01km_1 <- aa
-  saveRDS(p01km_1, loc_rds)
+  p01r_km_1 <- aa
+  saveRDS(p01r_km_1, loc_rds)
 } else { 
-  p01km_1 <- aa <- readRDS(loc_rds)
+  p01r_km_1 <- aa <- readRDS(loc_rds)
 }
 ```
 
 ```{r 'P01-R-XL-KM-4', decorate=TRUE, include=FALSE}
 loc_src <- here("data", "P01-KM-Week4.xlsx")
-loc_rds <- here("data", "P01-KM-Week4.rds")
+loc_rds <- here("data", "P01-R-KM-Week4.rds")
 if(FALSE | !file.exists(loc_rds)) {
   names_aa <- c("Edges", "Vertices")
   # #Verify Excel
@@ -198,35 +246,35 @@ if(FALSE | !file.exists(loc_rds)) {
   aa$Vertices <- bb
   #
   # #Save
-  p01km_4 <- aa
-  saveRDS(p01km_4, loc_rds)
+  p01r_km_4 <- aa
+  saveRDS(p01r_km_4, loc_rds)
 } else { 
-  p01km_4 <- aa <- readRDS(loc_rds)
+  p01r_km_4 <- aa <- readRDS(loc_rds)
 }
 ```
 
 ```{r 'P01-R-Dimensions-KM', decorate=TRUE}
 # #Dimensions of Each Sheet: Row 1 (Rows), Row 2 (Columns), Columns (Sheets)
-vapply(p01km_1, dim, numeric(2))
-vapply(p01km_4, dim, numeric(2))
+vapply(p01r_km_1, dim, numeric(2))
+vapply(p01r_km_4, dim, numeric(2))
 ```
 
 ### Structure R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Structure-KM', decorate=TRUE}
-str(p01km_1)
-str(p01km_4)
+str(p01r_km_1)
+str(p01r_km_4)
 ```
 
 ### Summary R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Summary-KM', decorate=TRUE}
 # #Summary of List Objects
-lapply(p01km_1, summary)
-lapply(p01km_4, summary)
+lapply(p01r_km_1, summary)
+lapply(p01r_km_4, summary)
 ```
 
-### XL to R {.unlisted .unnumbered}
+### Excel to R {.unlisted .unnumbered}
 
 ```{r 'P01-R-XL-KM-1-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-XL-KM-1')}
 #
@@ -268,86 +316,226 @@ if(FALSE) contrasts(bb$Married)
 if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
-### XL to Python {.unlisted .unnumbered}
-
-```{r 'P01-R-', decorate=TRUE}
-p01km_1
-```
+### Excel to Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-XL-KM-1', decorate=TRUE}
 loc_src = "data/P01-KM-Week1.xlsx"
-loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
-# #Read Excel Sheets as Dictionary of DataFrames
-pp = pd.read_excel(loc_src, sheet_name = None)
+loc_bin_e = "data/P01-Y-KM-Week-1-Edges.feather"
+loc_bin_v = "data/P01-Y-KM-Week-1-Vertices.feather"
 
-# #Type
-print(type(pp))
+if(os.path.isdir("data")):
+    # #If TRUE (Build, Knit, Console), Else (Manual Chunk)
+    #loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
+    loc_src = "./" + loc_src
+    loc_bin_e = "./" + loc_bin_e
+    loc_bin_v = "./" + loc_bin_v
+else:
+    loc_src = "./../" + loc_src
+    loc_bin_e = "./../" + loc_bin_e
+    loc_bin_v = "./../" + loc_bin_v
 
-# #Number of Sheets
-len(pp)
+# #Delete if Exists
+if 'pp' in globals(): del(pp)
 
-# #Names of Sheets
-print(pp.keys())
+if(False or not(os.path.exists(loc_bin_e)) or not(os.path.exists(loc_bin_v))):
+    # #Read Excel Sheets as Dictionary of DataFrames
+    pp = pd.read_excel(loc_src, sheet_name = None)
+    # #Type
+    print(type(pp))
+    
+    # #Number of Sheets
+    len(pp)
+    
+    # #Names of Sheets
+    print(pp.keys())
+    
+    # #Type of Dictionary Elements
+    print(type(pp['Edges']))
+    print(type(pp['Vertices']))
+    
+    # #Copy for Modifications: Edges
+    qq = pp['Edges'].copy()
+    
+    # #Column Headers of Key Edges
+    print(qq.columns.tolist())
+    
+    # #Rename Headers of Key Edges by mapping old names to new names
+    qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
+    
+    # #Convert Some Columns to String using subset selection
+    qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
+    
+    # #Replace specific values in columns
+    qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
+    qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
+    qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
+    qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
+    
+    # #Get a list of column names of specific datatype
+    cols = qq.select_dtypes(include=['object']).columns.to_list()
+    # #Coerce multiple columns having their column names in a list
+    qq[cols] = qq[cols].astype('category')
+    
+    # #Save the Modifications back to Original
+    pp['Edges'] = qq
+    
+    # #Copy for Modifications: Vertices
+    qq = pp['Vertices'].copy()
+    
+    # #Column Headers of Key Vertices
+    old_names = qq.columns.tolist()
+    print(old_names)
+    
+    # #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
+    new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
+    qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
+    print(qq.columns.tolist())
+    
+    # #Replace a Value in Multiple Columns
+    cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
+    qq[cols] = qq[cols].replace({'x':'Yes'})
+    
+    # #Replace NaN in Multiple Columns
+    qq[cols] = qq[cols].fillna('No')
+    
+    # #Get a list of column names of specific datatype
+    cols = qq.select_dtypes(include = ['object']).columns.to_list()
+    # #Coerce multiple columns having their column names in a list
+    qq[cols] = qq[cols].astype('category')
+    
+    # #Save the Modifications back to Original
+    pp['Vertices'] = qq
+    
+    # #Save as Feather
+    pyarrow.feather.write_feather(pp['Edges'], loc_bin_e)
+    pyarrow.feather.write_feather(pp['Vertices'], loc_bin_v)
+else:
+    # #Read Feather
+    pp = {
+        "Edges": pd.read_feather(loc_bin_e),
+        "Vertices": pd.read_feather(loc_bin_v)
+    }
 
-# #Type of Dictionary Elements
-print(type(pp['Edges']))
-print(type(pp['Vertices']))
-
-# #Copy for Modifications: Edges
-qq = pp['Edges'].copy()
-
-# #Column Headers of Key Edges
-print(qq.columns.tolist())
-
-# #Rename Headers of Key Edges by mapping old names to new names
-qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
-
-# #Convert Some Columns to String using subset selection
-qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
-
-# #Replace specific values in columns
-qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
-qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
-qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
-qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
-
-# #Get a list of column names of specific datatype
-cols = qq.select_dtypes(include=['object']).columns.to_list()
-# #Coerce multiple columns having their column names in a list
-qq[cols] = qq[cols].astype('category')
-
-# #Save the Modifications back to Original
-pp['Edges'] = qq
-
-# #Copy for Modifications: Vertices
-qq = pp['Vertices'].copy()
-
-# #Column Headers of Key Vertices
-old_names = qq.columns.tolist()
-print(old_names)
-
-# #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
-new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
-qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
-print(qq.columns.tolist())
-
-# #Replace a Value in Multiple Columns
-cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
-qq[cols] = qq[cols].replace({'x':'Yes'})
-
-# #Replace NaN in Multiple Columns
-qq[cols] = qq[cols].fillna('No')
-
-# #Get a list of column names of specific datatype
-cols = qq.select_dtypes(include = ['object']).columns.to_list()
-# #Coerce multiple columns having their column names in a list
-qq[cols] = qq[cols].astype('category')
-
-# #Save the Modifications back to Original
-pp['Vertices'] = qq
-
+#
 # #Save a deepcopy
-p01km_1_y = copy.deepcopy(pp)
+p01y_km_1 = copy.deepcopy(pp)
+
+```
+
+```{python 'P01-Y-XL-KM-4', decorate=TRUE}
+loc_src = "data/P01-KM-Week4.xlsx"
+loc_bin_e = "data/P01-Y-KM-Week-4-Edges.feather"
+loc_bin_v = "data/P01-Y-KM-Week-4-Vertices.feather"
+
+if(os.path.isdir("data")):
+    # #If TRUE (Build, Knit, Console), Else (Manual Chunk)
+    #loc_src = "./" + loc_src if os.path.isdir("data") else "./../" + loc_src
+    loc_src = "./" + loc_src
+    loc_bin_e = "./" + loc_bin_e
+    loc_bin_v = "./" + loc_bin_v
+else:
+    loc_src = "./../" + loc_src
+    loc_bin_e = "./../" + loc_bin_e
+    loc_bin_v = "./../" + loc_bin_v
+
+# #Delete if Exists
+if 'pp' in globals(): del(pp)
+
+if(False or not(os.path.exists(loc_bin_e)) or not(os.path.exists(loc_bin_v))):
+    # #Read Excel Sheets as Dictionary of DataFrames
+    pp = pd.read_excel(loc_src, sheet_name = None)
+    # #Type
+    print(type(pp))
+    
+    # #Number of Sheets
+    len(pp)
+    
+    # #Names of Sheets
+    print(pp.keys())
+    
+    # #Type of Dictionary Elements
+    print(type(pp['Edges']))
+    print(type(pp['Vertices']))
+    
+    # #Copy for Modifications: Edges
+    qq = pp['Edges'].copy()
+    
+    # #Column Headers of Key Edges
+    print(qq.columns.tolist())
+    
+    # #Rename Headers of Key Edges by mapping old names to new names
+    qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
+    
+    # #Convert Some Columns to String using subset selection
+    qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
+    
+    # #Replace specific values in columns
+    qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
+    qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
+    qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
+    qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
+    
+    # #Get a list of column names of specific datatype
+    cols = qq.select_dtypes(include=['object']).columns.to_list()
+    # #Coerce multiple columns having their column names in a list
+    qq[cols] = qq[cols].astype('category')
+    
+    # #Save the Modifications back to Original
+    pp['Edges'] = qq
+    
+    # #Copy for Modifications: Vertices
+    qq = pp['Vertices'].copy()
+    
+    # #Column Headers of Key Vertices
+    old_names = qq.columns.tolist()
+    print(old_names)
+    
+    # #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
+    new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
+    qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
+    print(qq.columns.tolist())
+    
+    # #Replace a Value in Multiple Columns
+    cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
+    qq[cols] = qq[cols].replace({'x':'Yes'})
+    
+    # #Replace NaN in Multiple Columns
+    qq[cols] = qq[cols].fillna('No')
+    
+    # #Get a list of column names of specific datatype
+    cols = qq.select_dtypes(include = ['object']).columns.to_list()
+    # #Coerce multiple columns having their column names in a list
+    qq[cols] = qq[cols].astype('category')
+    
+    # #Save the Modifications back to Original
+    pp['Vertices'] = qq
+    
+    # #Save as Feather
+    pyarrow.feather.write_feather(pp['Edges'], loc_bin_e)
+    pyarrow.feather.write_feather(pp['Vertices'], loc_bin_v)
+else:
+    # #Read Feather
+    pp = {
+        "Edges": pd.read_feather(loc_bin_e),
+        "Vertices": pd.read_feather(loc_bin_v)
+    }
+
+#
+# #Save a deepcopy
+p01y_km_4 = copy.deepcopy(pp)
+
+```
+
+```{python 'P01-Y-Head-KM', decorate=TRUE}
+print(p01y_km_1['Edges'].shape)
+print(p01y_km_1['Vertices'].shape)
+print(p01y_km_4['Edges'].shape)
+print(p01y_km_4['Vertices'].shape)
+#
+print(p01y_km_1['Edges'].head())
+print(p01y_km_1['Vertices'].head())
+print(p01y_km_4['Edges'].head())
+print(p01y_km_4['Vertices'].head())
 
 ```
 
@@ -377,24 +565,26 @@ A \textcolor{pink}{network} is a collection of entities and their relationships 
     - (v/c) - vertex-level character attribute
     - (e/n) - edge-level numeric attribute
 
-
 ```{r 'P01-R-iGraph-Kite', decorate=TRUE}
-bb <- p01kite
+# #DataFrame to Matrix
+bb <- as.matrix.data.frame(p01r_kite)
 # #Get iGraph (Undirected) from Adjacency Matrix
-u_kite <- graph_from_adjacency_matrix(bb, mode = "undirected")
-u_kite
+kite_u <- graph_from_adjacency_matrix(bb, mode = "undirected")
+kite_u
 #
 # #Get iGraph (Directed) from Adjacency Matrix
-d_kite <- graph_from_adjacency_matrix(bb, mode = "directed")
-d_kite
+kite_d <- graph_from_adjacency_matrix(bb, mode = "directed")
+kite_d
 #
-kite <- u_kite
+kite <- kite_u
 class(kite)
 #
 # #Get Adjacency Matrix from iGraph (Undirected)
-ii <- as_adjacency_matrix(u_kite, type = "both", sparse = FALSE)
+ii <- as_adjacency_matrix(kite_u, type = "both", sparse = FALSE) |> apply(2, as.integer)
+rownames(ii) <- NULL
 # #Get Adjacency Matrix from iGraph (Directed)
-jj <- as_adjacency_matrix(d_kite, sparse = FALSE)
+jj <- as_adjacency_matrix(kite_d, sparse = FALSE) |> apply(2, as.integer)
+rownames(jj) <- NULL
 stopifnot(all(identical(bb, ii), identical(bb, jj)))
 ```
 
@@ -816,7 +1006,7 @@ include_graphics(here("images", "P01I03-Kite-Communities.png"))
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
 ```{r 'P01-R-Cleanup', decorate=TRUE, include=FALSE, cache=FALSE}
-if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll, loc_rds, loc_src, names_ii, p01km_1, p01km_4)
+if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll, loc_rds, loc_src, names_ii, p01r_km_1, p01r_km_4)
 ```
 
 ```{r 'P01-R-Validation', decorate=TRUE, include=TRUE, cache=FALSE}
