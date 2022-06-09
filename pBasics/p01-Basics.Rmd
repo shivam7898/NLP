@@ -156,7 +156,6 @@ pp.info()
 
 ```
 
-
 ## Data: KM Network {#km-p01 .tabset .tabset-fade}
 
 ### Glance R {.unlisted .unnumbered}
@@ -316,9 +315,9 @@ if(FALSE) contrasts(bb$Married)
 if(FALSE) bb |> {\(x) vapply(x, class, character(1))}()
 ```
 
-### Excel to Python {.unlisted .unnumbered}
+### Glance Python {.unlisted .unnumbered}
 
-```{python 'P01-Y-XL-KM-1', decorate=TRUE}
+```{python 'P01-Y-XL-KM-1', decorate=TRUE, include=FALSE}
 loc_src = "data/P01-KM-Week1.xlsx"
 loc_bin_e = "data/P01-Y-KM-Week-1-Edges.feather"
 loc_bin_v = "data/P01-Y-KM-Week-1-Vertices.feather"
@@ -422,7 +421,7 @@ p01y_km_1 = copy.deepcopy(pp)
 
 ```
 
-```{python 'P01-Y-XL-KM-4', decorate=TRUE}
+```{python 'P01-Y-XL-KM-4', decorate=TRUE, include=FALSE}
 loc_src = "data/P01-KM-Week4.xlsx"
 loc_bin_e = "data/P01-Y-KM-Week-4-Edges.feather"
 loc_bin_v = "data/P01-Y-KM-Week-4-Vertices.feather"
@@ -539,6 +538,16 @@ print(p01y_km_4['Vertices'].head())
 
 ```
 
+### Excel to Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-XL-KM-1-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-Y-XL-KM-1')}
+#
+```
+
+```{python 'P01-Y-XL-KM-4-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-Y-XL-KM-4')}
+#
+```
+
 ## Network
 
 ```{definition 'Network'}
@@ -552,7 +561,7 @@ A \textcolor{pink}{network} is a collection of entities and their relationships 
 - \textcolor{pink}{Undirected}: $\quad A[i, j] = 1 \quad\Rightarrow\quad A[j, i] = 1$
 - \textcolor{pink}{Directed} &nbsp; &nbsp; &nbsp;: $\quad A[i, j] = 1 \quad\nRightarrow\quad A[j, i] = 1$
 
-### iGraph & Adjacency Matrix
+### iGraph & Adjacency Matrix {.tabset .tabset-fade}
 
 - \textcolor{pink}{iGraph} object description has 4 letters and 2 numbers
   - D or U, for a directed or undirected graph
@@ -564,6 +573,8 @@ A \textcolor{pink}{network} is a collection of entities and their relationships 
     - (g/c) - graph-level character attribute
     - (v/c) - vertex-level character attribute
     - (e/n) - edge-level numeric attribute
+
+#### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-iGraph-Kite', decorate=TRUE}
 # #DataFrame to Matrix
@@ -586,6 +597,40 @@ rownames(ii) <- NULL
 jj <- as_adjacency_matrix(kite_d, sparse = FALSE) |> apply(2, as.integer)
 rownames(jj) <- NULL
 stopifnot(all(identical(bb, ii), identical(bb, jj)))
+```
+
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-iGraph-Kite', decorate=TRUE}
+# #DataFrame | NumPy Structured Array (Adjacency Matrix) | List | D iGraph | U iGraph |
+pp = p01y_kite.copy()
+qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.dtypes.items()))
+
+# #Get iGraph (Directed) from Adjacency Matrix
+kite_d = ig.Graph.Adjacency(qq.tolist())
+# #Add Node Names
+kite_d.vs['name'] = qq.dtype.names
+
+# #Get iGraph (Undirected) from Directed Graph
+kite_u = copy.deepcopy(kite_d)
+kite_u.to_undirected()
+
+# #Summary
+ig.summary(kite_d)
+ig.summary(kite_u)
+
+# #Copy
+kite = copy.deepcopy(kite_u)
+
+# #Get DataFrame from iGraph
+ss = pd.DataFrame(kite.get_adjacency().data, columns = kite.vs['name'], dtype = np.int32)
+assert(pp.equals(ss))
+
+# #Indices
+print(kite.vs.indices)
+print(kite.vs["name"])
+print(kite)
+
 ```
 
 ### Layout
