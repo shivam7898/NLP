@@ -1,6 +1,7 @@
 # # reticulate::source_python(here::here("code", "B01Modules.py")) ===============================#
 
 if ('pandas' not in sys.modules):
+    # #Avoid implicit import: 'from x import y'
     import os
     import sys
     import platform
@@ -16,7 +17,9 @@ if ('pandas' not in sys.modules):
     import gc
     import igraph as ig
     import cairo
-    #from types import ModuleType as MT
+    import types
+    import pyarrow
+    import pyarrow.feather
 else:
     print("Python Modules not loaded again.")
 

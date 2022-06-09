@@ -4,7 +4,7 @@ if (!("conflicted" %in% (.packages()))) {
   if(FALSE) install.packages("conflicted", dependencies = TRUE)
   pkg <- character(0)
   pkg <- c(pkg, "conflicted", "here", "knitr", "reticulate")
-  pkg <- c(pkg, "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr")
+  pkg <- c(pkg, "ggplot2", "tibble", "readr", "tidyr", "purrr", "dplyr", "stringr")
   pkg <- c(pkg, "igraph", "httr", "jsonlite", "viridisLite", "scales", "fontawesome")
   pkg <- c(pkg, "kableExtra", "readxl", "latex2exp", "e1071", "lubridate", "car", "zoo", "forcats")
   #pkg <- c(pkg, "data.table", "gifski", "nycflights13", "gapminder", "Lahman", "nortest")
@@ -49,5 +49,4 @@ if (!("conflicted" %in% (.packages()))) {
   rm(pkg)
   # #Provide the path to the specific Python binary.
   use_python("C:\\Softwares\\Python\\Python310\\python.exe", required = TRUE)
-  #reticulate::source_python(here::here("code", "B01Modules.py"))
 } else print("R Packages not loaded again.")
