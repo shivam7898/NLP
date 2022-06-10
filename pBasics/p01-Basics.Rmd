@@ -8,6 +8,7 @@ reticulate::source_python(here::here("code", "B01Modules.py"), convert = FALSE)
 sys.source(here::here("code", "A04PackagesPython.R"), envir = knitr::knit_global())
 ```
 
+
 ```{r 'P01-R-Limit-Knit-Build', decorate=TRUE, include=FALSE, eval=FALSE}
 # #To only evaluate up to this chunk and complete the knit process.
 knit_exit()
@@ -1253,10 +1254,15 @@ include_graphics(here("images", "P01I03-Kite-Communities.png"))
 ## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
 
 ```{r 'P01-R-Cleanup', decorate=TRUE, include=FALSE, cache=FALSE}
-if(FALSE) f_rmExist(aa, bb, ii, jj, kk, ll, loc_rds, loc_src, names_ii, p01r_km_1, p01r_km_4)
+if(TRUE) f_rmExist(aa, away_d, bb, btw, cap_hh, cliq_hh, def_par, dia_hh, e_col_hh, e_w_hh, 
+                    far_hh, greed, hh, hh_b, hh_g, hh_w, ii, ii_deg, ii_egn, ii_res, jj, kite_d, 
+                    kite_u, kk, lgd_col_hh, lgd_size_hh, lgd_ttl_col_hh, lgd_ttl_size_hh, ll, 
+                    loc_bin, loc_png, loc_rds, loc_src, P01I01, P01I02, P01I03, p01r_kite, 
+                    p01r_km_1, p01r_km_4, pal_hh, r_kite, size_hh, size_m, ttl_hh, ttl_hh_b, 
+                    ttl_hh_g, ttl_hh_w, v_col_hh, v_lbl_col_hh, walk)
 ```
 
-```{r 'P01-R-Validation', decorate=TRUE, include=TRUE, cache=FALSE}
+```{r 'P01-R-Validation', decorate=TRUE, include=FALSE, cache=FALSE}
 # #SUMMARISED Packages and Objects (BOOK CHECK)
 f_()
 #
