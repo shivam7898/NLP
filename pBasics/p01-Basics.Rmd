@@ -587,8 +587,8 @@ kite_u
 kite_d <- graph_from_adjacency_matrix(bb, mode = "directed")
 kite_d
 #
-kite <- kite_u
-class(kite)
+r_kite <- kite_u
+class(r_kite)
 #
 # #Get Adjacency Matrix from iGraph (Undirected)
 ii <- as_adjacency_matrix(kite_u, type = "both", sparse = FALSE) |> apply(2, as.integer)
@@ -610,6 +610,8 @@ qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.
 kite_d = ig.Graph.Adjacency(qq.tolist())
 # #Add Node Names
 kite_d.vs['name'] = qq.dtype.names
+# #Add Node Labels
+kite_d.vs['label'] = kite_d.vs['name']
 
 # #Get iGraph (Undirected) from Directed Graph
 kite_u = copy.deepcopy(kite_d)
@@ -620,20 +622,22 @@ ig.summary(kite_d)
 ig.summary(kite_u)
 
 # #Copy
-kite = copy.deepcopy(kite_u)
+y_kite = copy.deepcopy(kite_u)
 
 # #Get DataFrame from iGraph
-ss = pd.DataFrame(kite.get_adjacency().data, columns = kite.vs['name'], dtype = np.int32)
+ss = pd.DataFrame(y_kite.get_adjacency().data, columns = y_kite.vs['name'], dtype = np.int32)
 assert(pp.equals(ss))
 
 # #Indices
-print(kite.vs.indices)
-print(kite.vs["name"])
-print(kite)
+print(y_kite.vs.indices)
+print(y_kite.vs['name'])
+print(y_kite)
 
 ```
 
-### Layout
+### Layout {.tabset .tabset-fade}
+
+#### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Layout-Kite', decorate=TRUE}
 # #Attaching a default layout to the Network for ease of comparison
@@ -641,39 +645,95 @@ if(FALSE) {
   # #Generate a Layout Matrix of Coordinates
   set.seed(3)
   # #Layout: Fruchterman Reingold layout_with_fr () or Kamada Kawai layout_with_kk()
-  ii <- round(layout_with_fr(kite), 1)
+  ii <- round(layout_with_fr(r_kite), 1)
   dput(ii)
+  #matrix(c(9.8, 11.1, 9.3, 10.6, 11.9, 10.4, 11.5, 11.5, 12.1, 12.7, 
+  #         6.1, 5.7, 6.9, 6.5, 6, 7.5, 7.1, 8.8, 10.6, 12), ncol = 2, byrow = FALSE) 
+  #matrix(c(9.8, 6.1, 11.1, 5.7, 9.3, 6.9, 10.6, 6.5, 11.9, 6, 
+  #         10.4, 7.5, 11.5, 7.1, 11.5, 8.8, 12.1, 10.6, 12.7, 12), ncol = 2, byrow = TRUE)
 }
 # #Attach Layout Coordinates as Graph Attribute
-graph_attr(kite, "layout") <- matrix(c(9.8, 11.1, 9.3, 10.6, 11.9, 10.4, 11.5, 11.5, 12.1, 12.7, 
-                                       6.1, 5.7, 6.9, 6.5, 6, 7.5, 7.1, 8.8, 10.6, 12), 
-                                     ncol = 2, byrow = FALSE) 
+graph_attr(r_kite, "layout") <- matrix(c(9.8, 6.1, 11.1, 5.7, 9.3, 6.9, 10.6, 6.5, 11.9, 6, 
+            10.4, 7.5, 11.5, 7.1, 11.5, 8.8, 12.1, 10.6, 12.7, 12), ncol = 2, byrow = TRUE)
 ```
 
-### Vertices or Nodes
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Layout-Kite', decorate=TRUE}
+pp = [[9.8, 6.1], [11.1, 5.7], [9.3, 6.9], [10.6, 6.5], [11.9, 6], 
+      [10.4, 7.5], [11.5, 7.1], [11.5, 8.8], [12.1, 10.6], [12.7, 12]]
+if(False): ig.plot(y_kite, layout = pp)
+
+# #Set Visual Style
+visual_style = {}
+#visual_style["layout"] = y_kite.layout_fruchterman_reingold()
+visual_style["layout"] = pp
+
+if(False): ig.plot(y_kite, **visual_style)
+
+```
+
+### Vertices or Nodes {.tabset .tabset-fade}
+
+#### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Vertices-Kite', decorate=TRUE}
+bb <- r_kite
 # #Count Vertices
-vcount(kite)
+vcount(bb)
 #
 # #Named Vector of Vertices
-V(kite)
+V(bb)
 ```
 
-### Edges or Links
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Vertices-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Count Vertices
+pp.vcount()
+
+# #List of Vertices
+pp.vs['name']
+
+```
+
+### Edges or Links {.tabset .tabset-fade}
+
+#### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Edges-Kite', decorate=TRUE}
+bb <- r_kite
 # #Count Edges
-ecount(kite)
-#
+ecount(bb)
+
 # #Named Vector of Edges
-E(kite)
+E(bb)
 ```
 
-### Edgelist & iGraph
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Edges-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Count Edges
+pp.ecount()
+
+# #List of Edges - EdgeList and unnamed #ForLater
+#print(pp)
+pp.get_edgelist() #Not Named
+
+#qq = pp.es.select(_within=[0,1,2,3,4,5,6,7,8,9])
+#qq = pp.es.select(_within=pp.vs[0:9])
+#qq.indices #Gives the Edges Sequence
+
+```
+
+### Edgelist & iGraph {.tabset .tabset-fade}
+
+#### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-EdgeList-Kite', decorate=TRUE}
-bb <- kite
+bb <- r_kite
 #
 # #Get Edgelist from iGraph
 ii <- as_edgelist(bb, names = TRUE)
@@ -691,48 +751,113 @@ stopifnot(identical(kk, ll))
 ll
 ```
 
-### Shortest Paths
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-EdgeList-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Get Edgelist from iGraph - Unnamed #Later
+pp.get_edgelist() #Not Named
+
+```
+
+### Shortest Paths {.tabset .tabset-fade}
 
 - The \textcolor{pink}{shortest paths} matrix shows us the minimum number of edges between each member (degrees of separation)
   - The shortest path length from a vertex to itself is always zero. 
 
+#### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Shortest-Paths-Kite', decorate=TRUE}
+bb <- r_kite
 # #Histogram of the shortest path length between each pair of vertices.
-distance_table(kite)
+distance_table(bb)
 #
 # #Numeric matrix with length(to) columns and length(v) rows. 
-distances(kite, mode = "all")
+distances(bb, mode = "all")
 ```
 
-### Diameter
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Shortest-Paths-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+
+# #ForLater
+pp.get_all_shortest_paths(v=0)
+pp.get_all_shortest_paths(v="A")
+
+```
+
+### Diameter {.tabset .tabset-fade}
 
 - The \textcolor{pink}{diameter} of a network tells us the number of edges between the most distant members
   - The diameter of a graph is the length of the longest geodesic.
 
+#### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Diameter-Kite', decorate=TRUE}
+bb <- r_kite
 # #Diameter
-diameter(kite)
+diameter(bb)
 #
 # #Two vertex ids, the vertices which are connected by the diameter path.
-farthest_vertices(kite)
+farthest_vertices(bb)
 ```
 
-### Reciprocity
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Diameter-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Diameter
+pp.get_diameter()
+
+# #Subset a List by index
+[pp.vs['name'][i] for i in pp.get_diameter()]
+
+# #Two vertex ids, the vertices which are connected by the diameter path.
+pp.farthest_points()
+
+```
+
+### Reciprocity {.tabset .tabset-fade}
 
 - \textcolor{pink}{Reciprocity} is the ratio of the number of reciprocated edges to the number of total edges.
 
+#### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Reciprocity-Kite', decorate=TRUE}
+bb <- r_kite
 # #Reciprocity
-reciprocity(kite)
+reciprocity(bb)
 ```
 
-### Density or Clustering Coefficient
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Reciprocity-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Reciprocity
+pp.reciprocity()
+
+```
+
+### Density or Clustering Coefficient {.tabset .tabset-fade}
 
 - The \textcolor{pink}{density} or 'Clustering Coefficient' of a graph is the ratio of the number of edges and the number of possible edges.
 
+#### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Density-Kite', decorate=TRUE}
+bb <- r_kite
 # #Density
-edge_density(kite)
+edge_density(bb)
+```
+
+#### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Density-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Density
+pp.density()
+
 ```
 
 ### Network {.tabset .tabset-fade}
@@ -740,7 +865,7 @@ edge_density(kite)
 #### Plot {.unlisted .unnumbered}
 
 ```{r 'P01-R-Plot-Kite', decorate=TRUE, include=FALSE}
-hh <- kite
+hh <- r_kite
 #
 # #Use Degrees of each node to indicate size
 size_m <- 5L 
@@ -808,33 +933,68 @@ include_graphics(here("images", "P01I01-Kite.png"))
 
 ### Centrality
 
-#### Degree Centrality
+#### Degree Centrality {.tabset .tabset-fade}
 
 - The \textcolor{pink}{degree} of a vertex is the number connections (adjacent edges) for a node
 
+##### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Centrality-Degree-Kite', decorate=TRUE}
+bb <- r_kite
 # #Vector of each Vertex Degree: mode = c("all", "out", "in", "total")
-degree(kite, mode = "all")
+degree(bb, mode = "all")
 ```
 
-#### Closeness Centrality
+##### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Centrality-Degree-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Dictionary of each Vertex Degree by combining Two Lists
+qq = dict(zip(pp.vs['name'], pp.degree(), strict = True))
+#qq.keys()
+#qq.values()
+#print(qq.items())
+print(qq)
+for key, value in qq.items(): print(key + " : " + value.__str__())
+
+```
+
+#### Closeness Centrality {.tabset .tabset-fade}
 
 - \textcolor{pink}{Closeness centrality} measures how many steps is required to access every other vertex from a given vertex.
   - Normalized closeness centrality shows the inverse of the number of edges to all other nodes in the graph (e.g. a value of .5 means an average of two edges)
 
+##### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Centrality-Closeness-Kite', decorate=TRUE}
+bb <- r_kite
 # #Vector of each Vertex Closeness: mode = c("all", "out", "in", "total")
-closeness(kite, mode = "all", normalized = TRUE) |> round(3)
+closeness(bb, mode = "all", normalized = TRUE) |> round(3)
 ```
 
-#### Betweenness Centrality
+##### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Centrality-Closeness-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Dictionary of each Vertex Closeness by combining Two Lists
+qq = [round(i, 3) for i in pp.closeness()]
+ss = dict(zip(pp.vs['name'], qq, strict = True))
+print(ss)
+for key, value in ss.items(): print(key + " : " + value.__str__())
+
+```
+
+#### Betweenness Centrality {.tabset .tabset-fade}
 
 - \textcolor{pink}{Betweenness centrality} shows the number of shortest paths a node is on between pairs of other nodes. 
   - If multiple shortest paths between two nodes exist the betweenness is shared among all the intermediate nodes
 
+##### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Centrality-Betweenness-Kite', decorate=TRUE}
+bb <- r_kite
 # #Betweenness returns a 'communities' object
-ii <- cluster_edge_betweenness(kite) 
+ii <- cluster_edge_betweenness(bb) 
 attributes(ii)
 str(ii)
 #
@@ -851,15 +1011,35 @@ setNames(ii$membership, nm = ii$names)
 ii[[1]]
 ```
 
-#### Eigenvector Centrality or Pagerank
+##### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Centrality-Betweenness-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+# #Betweenness returns a 'communities' object
+qq = [round(i, 3) for i in pp.betweenness()]
+print(qq)
+
+#cl = ig.Clustering(pp.vs()['group'])
+#print(cl)
+#pp.modularity(membership=cl)
+#ig.VertexClustering(pp, pp.vs["group"])
+
+# #ForLater
+
+```
+
+#### Eigenvector Centrality or Pagerank {.tabset .tabset-fade}
 
 - \textcolor{pink}{Eigenvector centrality} or Pagerank scores correspond to the values of the first eigenvector of the graph adjacency matrix; these scores may, in turn, be interpreted as arising from a reciprocal process in which the centrality of each actor is proportional to the sum of the centralities of those actors to whom he or she is connected. 
   - In general, vertices with high eigenvector centralities are those which are connected to many other vertices which are, in turn, connected to many others.
   - It is a recursive measure of centrality, measuring each node by not only the number of connections it has, but weighting that metric by how many connections its connections have, which are in turn weighted by their connections etc. 
 
+##### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Centrality-Eigenvector-Kite', decorate=TRUE}
+bb <- r_kite
 # #List of Eigenvector and Eigenvalue Score
-ii <- eigen_centrality(kite) 
+ii <- eigen_centrality(bb) 
 #
 # #Eigenvector of each Vertex
 ii$vector |> round(3)
@@ -868,12 +1048,31 @@ ii$vector |> round(3)
 ii$value
 ```
 
-#### Degree & Eigenvalue
+##### Python {.unlisted .unnumbered}
+
+```{python 'P01-Y-Centrality-Eigenvector-Kite', decorate=TRUE}
+pp = copy.deepcopy(y_kite)
+
+# #List of Eigenvector
+qq = [round(i, 3) for i in pp.eigenvector_centrality()]
+ss = dict(zip(pp.vs['name'], qq, strict = True))
+print(ss)
+for key, value in ss.items(): print(key + " : " + value.__str__())
+
+# #Eigenvalue Score - #ForLater
+
+```
+
+#### Degree & Eigenvalue {.tabset .tabset-fade}
 
 - Residual of Simple Linear Regression can be used to size the nodes in our network. This may identify nodes which are connected to only a few nodes, which are "important" i.e. they have high eigenvector centrality.
 
+- #ForLater - Python igraph
+
+##### R {.unlisted .unnumbered}
+
 ```{r 'P01-R-Degree-Eigenvector-Kite', decorate=TRUE}
-bb <- kite
+bb <- r_kite
 ii_deg <- degree(bb, mode = "all")
 ii_egn <- eigen_centrality(bb)$vector
 # #Tibble
@@ -883,6 +1082,7 @@ ii_res <- lm(Eigen ~ Degree, data = ii)$residuals |> round(7)
 # #Add Residuals
 ii |> add_column(Residual = ii_res) |> mutate(Size = abs(Residual)*100)
 ```
+
 
 ### Cliques {.tabset .tabset-fade}
 
@@ -895,7 +1095,7 @@ ii |> add_column(Residual = ii_res) |> mutate(Size = abs(Residual)*100)
   - NOTE: Directed graphs will be considered as Undirected ones for Cliques calculation
   
 ```{r 'P01-R-Cliques-Kite', decorate=TRUE}
-bb <- kite
+bb <- r_kite
 # #Max Cliques with Lengths
 summary(max_cliques(bb))[, 1]
 #
@@ -908,9 +1108,8 @@ coreness(bb)
 
 #### Plot {.unlisted .unnumbered}
 
-
 ```{r 'P01-R-Plot-Kite-Cliques', decorate=TRUE, include=FALSE}
-hh <- kite
+hh <- r_kite
 #
 # #Get Largest Cliques
 cliq_hh <- largest_cliques(hh)
@@ -953,7 +1152,7 @@ include_graphics(here("images", "P01I02-Kite-Cliques.png"))
 #
 ```
 
-## Community Detection & Modularity
+## Community Detection & Modularity {.tabset .tabset-fade}
 
 - Popular algorithms for finding structure in large graphs
   - \textcolor{pink}{Walktrap} algorithm 
@@ -965,9 +1164,10 @@ include_graphics(here("images", "P01I02-Kite-Cliques.png"))
 - \textcolor{pink}{Modularity} is one way to measure of the success of a community finding algorithm. 
   - The higher the modularity, the more dense edges within groups are and the more sparse edges reaching outside of the groups are. i.e. \textcolor{pink}{Higher is Better}.
 
+### R {.unlisted .unnumbered}
 
 ```{r 'P01-R-Community', decorate=TRUE}
-bb <- kite
+bb <- r_kite
 # #Betweenness Centrality: Slow
 btw <- cluster_edge_betweenness(bb) 
 # #Modularity
@@ -996,12 +1196,14 @@ sizes(greed)
 setNames(greed$membership, nm = greed$names)
 ```
 
-### Algorithms {.tabset .tabset-fade}
+### Python {.unlisted .unnumbered}
 
-#### Plot {.unlisted .unnumbered}
+## Community Detection Algorithms {.tabset .tabset-fade}
+
+### Plot {.unlisted .unnumbered}
 
 ```{r 'P01-R-Plot-Kite-Communities', decorate=TRUE, include=FALSE}
-hh <- kite
+hh <- r_kite
 hh_b <- cluster_edge_betweenness(hh) 
 hh_w <- cluster_walktrap(hh)
 hh_g <- cluster_fast_greedy(hh)
@@ -1042,7 +1244,7 @@ if(FALSE | !file.exists(loc_png)) {
 include_graphics(here("images", "P01I03-Kite-Communities.png"))
 ```
 
-#### Code {.unlisted .unnumbered}
+### Code {.unlisted .unnumbered}
 
 ```{r 'P01-R-Plot-Kite-Communities-A', decorate=TRUE, eval=FALSE, ref.label=c('P01-R-Plot-Kite-Communities')}
 #
