@@ -337,70 +337,70 @@ if(False or not(os.path.exists(loc_bin_e)) or not(os.path.exists(loc_bin_v))):
     pp = pd.read_excel(loc_src, sheet_name = None)
     # #Type
     print(type(pp))
-    
+    #
     # #Number of Sheets
     len(pp)
-    
+    #
     # #Names of Sheets
     print(pp.keys())
-    
+    #
     # #Type of Dictionary Elements
     print(type(pp['Edges']))
     print(type(pp['Vertices']))
-    
+    #
     # #Copy for Modifications: Edges
     qq = pp['Edges'].copy()
-    
+    #
     # #Column Headers of Key Edges
     print(qq.columns.tolist())
-    
+    #
     # #Rename Headers of Key Edges by mapping old names to new names
     qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
-    
+    #
     # #Convert Some Columns to String using subset selection
     qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
-    
+    #
     # #Replace specific values in columns
     qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
     qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
     qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
     qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
-    
+    #
     # #Get a list of column names of specific datatype
     cols = qq.select_dtypes(include=['object']).columns.to_list()
     # #Coerce multiple columns having their column names in a list
     qq[cols] = qq[cols].astype('category')
-    
+    #
     # #Save the Modifications back to Original
     pp['Edges'] = qq
-    
+    #
     # #Copy for Modifications: Vertices
     qq = pp['Vertices'].copy()
-    
+    #
     # #Column Headers of Key Vertices
     old_names = qq.columns.tolist()
     print(old_names)
-    
+    #
     # #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
     new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
     qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
     print(qq.columns.tolist())
-    
+    #
     # #Replace a Value in Multiple Columns
     cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
     qq[cols] = qq[cols].replace({'x':'Yes'})
-    
+    #
     # #Replace NaN in Multiple Columns
     qq[cols] = qq[cols].fillna('No')
-    
+    #
     # #Get a list of column names of specific datatype
     cols = qq.select_dtypes(include = ['object']).columns.to_list()
     # #Coerce multiple columns having their column names in a list
     qq[cols] = qq[cols].astype('category')
-    
+    #
     # #Save the Modifications back to Original
     pp['Vertices'] = qq
-    
+    #
     # #Save as Feather
     pyarrow.feather.write_feather(pp['Edges'], loc_bin_e)
     pyarrow.feather.write_feather(pp['Vertices'], loc_bin_v)
@@ -441,70 +441,70 @@ if(False or not(os.path.exists(loc_bin_e)) or not(os.path.exists(loc_bin_v))):
     pp = pd.read_excel(loc_src, sheet_name = None)
     # #Type
     print(type(pp))
-    
+    #
     # #Number of Sheets
     len(pp)
-    
+    #
     # #Names of Sheets
     print(pp.keys())
-    
+    #
     # #Type of Dictionary Elements
     print(type(pp['Edges']))
     print(type(pp['Vertices']))
-    
+    #
     # #Copy for Modifications: Edges
     qq = pp['Edges'].copy()
-    
+    #
     # #Column Headers of Key Edges
     print(qq.columns.tolist())
-    
+    #
     # #Rename Headers of Key Edges by mapping old names to new names
     qq.rename(columns = {"Vertex 1": "Node_1", "Vertex 2": "Node_2"}, inplace = True)
-    
+    #
     # #Convert Some Columns to String using subset selection
     qq[['Recognition', 'Friendship']] = qq[['Recognition', 'Friendship']].astype(str)
-    
+    #
     # #Replace specific values in columns
     qq.loc[qq['Recognition'] == "0", 'Recognition'] = "No"
     qq.loc[qq['Recognition'] == "1", 'Recognition'] = "Yes"
     qq.loc[qq['Friendship'] == "0", 'Friendship'] = "No"
     qq.loc[qq['Friendship'] == "1", 'Friendship'] = "Yes"
-    
+    #
     # #Get a list of column names of specific datatype
     cols = qq.select_dtypes(include=['object']).columns.to_list()
     # #Coerce multiple columns having their column names in a list
     qq[cols] = qq[cols].astype('category')
-    
+    #
     # #Save the Modifications back to Original
     pp['Edges'] = qq
-    
+    #
     # #Copy for Modifications: Vertices
     qq = pp['Vertices'].copy()
-    
+    #
     # #Column Headers of Key Vertices
     old_names = qq.columns.tolist()
     print(old_names)
-    
+    #
     # #Rename Headers of Key Vertices by mapping old names to new names after zipping old & new
     new_names = ['Node', 'Gender', 'Status', 'ACCT', 'IE', 'MS-MIS', 'MBA', 'Group', 'Major']
     qq.rename(columns = dict(zip(old_names, new_names)), inplace = True)
     print(qq.columns.tolist())
-    
+    #
     # #Replace a Value in Multiple Columns
     cols = ['ACCT', 'IE', 'MS-MIS', 'MBA']
     qq[cols] = qq[cols].replace({'x':'Yes'})
-    
+    #
     # #Replace NaN in Multiple Columns
     qq[cols] = qq[cols].fillna('No')
-    
+    #
     # #Get a list of column names of specific datatype
     cols = qq.select_dtypes(include = ['object']).columns.to_list()
     # #Coerce multiple columns having their column names in a list
     qq[cols] = qq[cols].astype('category')
-    
+    #
     # #Save the Modifications back to Original
     pp['Vertices'] = qq
-    
+    #
     # #Save as Feather
     pyarrow.feather.write_feather(pp['Edges'], loc_bin_e)
     pyarrow.feather.write_feather(pp['Vertices'], loc_bin_v)
@@ -595,18 +595,22 @@ rownames(jj) <- NULL
 stopifnot(all(identical(bb, ii), identical(bb, jj)))
 ```
 
-```{r 'P01-R-iGraph-Kite-builtin', decorate=TRUE}
-# #Use Dataset Provided with igraph package
+#### R Dataset {.unlisted .unnumbered}
+
+```{r 'P01-R-iGraph-Kite-Standard', decorate=TRUE}
+# #Use standard dataset provided with the igraph package
 bb <- make_graph("Krackhardt kite")
 # #Assign Letters
 V(bb)$name <- LETTERS[1:vcount(bb)]
 # #Verify Edgelist between Pacakge Data and CSV
-stopifnot(identical(attributes(E(bb))$vnames, attributes(E(kite_u))$vnames))
-attributes(V(bb))
-attributes(E(bb))
+stopifnot(all(identical(attributes(E(bb))$vnames, attributes(E(kite_u))$vnames), 
+              identical(attributes(V(bb))$names, attributes(V(kite_u))$names)))
+# #Compare Graphs: NOTE: Avoid identical_graphs() as it looks for R internal representation
+stopifnot(isomorphic(bb, kite_u))
 
 # #Copy
 r_kite <- bb
+print(r_kite)
 ```
 
 #### Python {.unlisted .unnumbered}
@@ -620,7 +624,7 @@ qq = np.array([tuple(Row) for Row in pp.to_numpy(copy = True)], dtype = list(pp.
 kite_d = ig.Graph.Adjacency(qq.tolist())
 # #Add Node Names
 kite_d.vs['name'] = qq.dtype.names
-# #Add Node Labels
+# #Add Node Labels same as Names
 kite_d.vs['label'] = kite_d.vs['name']
 
 # #Get iGraph (Undirected) from Directed Graph
@@ -632,16 +636,77 @@ ig.summary(kite_d)
 ig.summary(kite_u)
 
 # #Copy
-y_kite = copy.deepcopy(kite_u)
+#y_ig_kite = copy.deepcopy(kite_u)
 
 # #Get DataFrame from iGraph
-ss = pd.DataFrame(y_kite.get_adjacency().data, columns = y_kite.vs['name'], dtype = np.int32)
+ss = pd.DataFrame(kite_u.get_adjacency().data, columns = kite_u.vs['name'], dtype = np.int32)
 assert(pp.equals(ss))
 
+```
+
+#### Python Dataset {.unlisted .unnumbered}
+
+```{python 'P01-Y-iGraph-Kite-Standard', decorate=TRUE}
+# #Use standard dataset provided with the igraph package
+pp = ig.Graph.Famous("Krackhardt_Kite")
+
+# #Add Node Names
+pp.vs['name'] = list(string.ascii_uppercase[0:pp.vcount()])
+
+# #Add Node Labels same as Names
+pp.vs['label'] = pp.vs['name']
+
+# #Verify
+assert(0 == ig.Graph.difference(kite_u, pp).ecount() and 
+       0 == ig.Graph.difference(pp, kite_u).ecount() and
+       pp.isomorphic(kite_u))
+# #Copy
+y_ig_kite = copy.deepcopy(pp)
+
 # #Indices
-print(y_kite.vs.indices)
-print(y_kite.vs['name'])
-print(y_kite)
+print(y_ig_kite.vs.indices)
+print(y_ig_kite.vs['name'])
+print(y_ig_kite)
+
+```
+
+#### Python iGraph & NetworkX {.unlisted .unnumbered}
+
+```{python 'P01-Y-iGraph-NetworkX', decorate=TRUE}
+pp = copy.deepcopy(y_ig_kite)
+
+# #Convert iGraph to NetworkX
+if(False):
+    # #This loses the Node Names and Degree 0 Nodes
+    print(type(pp))
+    qq = pp.get_edgelist()
+    print(type(qq))
+    ss = nx.Graph(qq)
+    print(type(ss))
+
+# #Convert iGraph to NetworkX & keep the node names
+ss = nx.from_edgelist([(names[x[0]], names[x[1]]) 
+                      for names in [pp.vs['name']] 
+                      for x in pp.get_edgelist()], nx.Graph())
+
+# #Print NetworkX
+print(ss.nodes)
+print(ss.edges)
+
+# #Copy
+y_nx_kite = copy.deepcopy(ss)
+
+# #Convert NetworkX to iGraph
+tt = ig.Graph.TupleList(ss.edges())
+
+# #Verify
+assert(tt.isomorphic(pp))
+
+# #Unable to use the syntax for Class Method from_networkx()
+#uu = ig.Graph.from_networkx(pp) #AttributeError: 'Graph' object has no attribute 'graph'
+#uu = ig.from_networkx(pp) #AttributeError: module 'igraph' has no attribute 'from_networkx'
+#pp.from_networkx() #TypeError: Graph.from_networkx() missing 1 required positional argument: 'g'
+#pp.from_networkx(pp) #AttributeError: 'Graph' object has no attribute 'graph'
 
 ```
 
@@ -672,14 +737,14 @@ graph_attr(r_kite, "layout") <- matrix(c(9.8, 6.1, 11.1, 5.7, 9.3, 6.9, 10.6, 6.
 ```{python 'P01-Y-Layout-Kite', decorate=TRUE}
 pp = [[9.8, 6.1], [11.1, 5.7], [9.3, 6.9], [10.6, 6.5], [11.9, 6], 
       [10.4, 7.5], [11.5, 7.1], [11.5, 8.8], [12.1, 10.6], [12.7, 12]]
-if(False): ig.plot(y_kite, layout = pp)
+if(False): ig.plot(y_ig_kite, layout = pp)
 
 # #Set Visual Style
 visual_style = {}
-#visual_style["layout"] = y_kite.layout_fruchterman_reingold()
+#visual_style["layout"] = y_ig_kite.layout_fruchterman_reingold()
 visual_style["layout"] = pp
 
-if(False): ig.plot(y_kite, **visual_style)
+if(False): ig.plot(y_ig_kite, **visual_style)
 
 ```
 
@@ -699,7 +764,7 @@ V(bb)
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Vertices-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Count Vertices
 pp.vcount()
 
@@ -724,7 +789,7 @@ E(bb)
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Edges-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Count Edges
 pp.ecount()
 
@@ -764,7 +829,7 @@ ll
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-EdgeList-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Get Edgelist from iGraph - Unnamed #Later
 pp.get_edgelist() #Not Named
 
@@ -789,7 +854,7 @@ distances(bb, mode = "all")
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Shortest-Paths-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 
 # #ForLater
 pp.get_all_shortest_paths(v=0)
@@ -816,7 +881,7 @@ farthest_vertices(bb)
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Diameter-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Diameter
 pp.get_diameter()
 
@@ -843,7 +908,7 @@ reciprocity(bb)
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Reciprocity-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Reciprocity
 pp.reciprocity()
 
@@ -864,7 +929,7 @@ edge_density(bb)
 #### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Density-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+pp = copy.deepcopy(y_ig_kite)
 # #Density
 pp.density()
 
@@ -958,14 +1023,41 @@ degree(bb, mode = "all")
 ##### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Centrality-Degree-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
-# #Dictionary of each Vertex Degree by combining Two Lists
-qq = dict(zip(pp.vs['name'], pp.degree(), strict = True))
-#qq.keys()
-#qq.values()
-#print(qq.items())
-print(qq)
-for key, value in qq.items(): print(key + " : " + value.__str__())
+# #iGraph
+pp = copy.deepcopy(y_ig_kite)
+# #NetworkX
+qq = copy.deepcopy(y_nx_kite)
+
+# #iGraph: Dictionary of each Vertex Degree by combining Two Lists
+ss = dict(zip(pp.vs['name'], pp.degree(), strict = True))
+print(ss)
+#ss.keys()
+#ss.values()
+
+# #NetworkX: Dictionary of each Vertex Degree 
+ss = dict(qq.degree())
+print(ss)
+# Degree Centrality: Fraction /Normalised
+tt = nx.degree_centrality(qq)
+{k:round(v, 3) for k, v in tt.items()}
+
+
+if(False):
+    # #Printed Vertically
+    for key, value in ss.items(): print(key + " : " + value.__str__())
+    #
+    # #Sorted Dictionary - 1
+    uu = sorted(ss.items(), reverse = True, key = operator.itemgetter(1))[0:len(ss)]
+    print("\n".join(map(lambda x: "{} : {}".format(*reversed(x)), uu)))
+    #
+    # #Sorted Dictionary - 2
+    {k: v for k, v in sorted(ss.items(), reverse = True, key = lambda item: item[1])}
+    #
+    # #Sorted Dictionary - 3 (0 for Keys, 1 for Values)
+    dict(sorted(ss.items(), reverse = True, key = lambda item: item[1]))
+    
+#
+dict(sorted(ss.items(), reverse = True, key = lambda item: item[1]))
 
 ```
 
@@ -979,18 +1071,26 @@ for key, value in qq.items(): print(key + " : " + value.__str__())
 ```{r 'P01-R-Centrality-Closeness-Kite', decorate=TRUE}
 bb <- r_kite
 # #Vector of each Vertex Closeness: mode = c("all", "out", "in", "total")
+closeness(bb, mode = "all", normalized = FALSE) |> round(3) #Match with NodeXL
 closeness(bb, mode = "all", normalized = TRUE) |> round(3)
 ```
 
 ##### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Centrality-Closeness-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
-# #Dictionary of each Vertex Closeness by combining Two Lists
-qq = [round(i, 3) for i in pp.closeness()]
-ss = dict(zip(pp.vs['name'], qq, strict = True))
+# #iGraph
+pp = copy.deepcopy(y_ig_kite)
+# #NetworkX
+qq = copy.deepcopy(y_nx_kite)
+
+# #iGraph: List of Closeness for each node
+ss = [round(i, 3) for i in pp.closeness(normalized = False)] #Match with NodeXL
 print(ss)
-for key, value in ss.items(): print(key + " : " + value.__str__())
+[round(i, 3) for i in pp.closeness(normalized = True)] #Match with NetworkX
+
+# #NetworkX: Dictionary of Closeness (Only Normalised option is available)
+tt = nx.closeness_centrality(qq)
+{k:round(v, 3) for k, v in tt.items()}
 
 ```
 
@@ -1003,10 +1103,14 @@ for key, value in ss.items(): print(key + " : " + value.__str__())
 
 ```{r 'P01-R-Centrality-Betweenness-Kite', decorate=TRUE}
 bb <- r_kite
-# #Betweenness returns a 'communities' object
+#
+# #Vector of Betweenness for each node
+betweenness(bb) |> round(3)
+#
+# #Communities
 ii <- cluster_edge_betweenness(bb) 
 attributes(ii)
-str(ii)
+#str(ii)
 #
 # #Modularity
 modularity(ii)
@@ -1024,17 +1128,22 @@ ii[[1]]
 ##### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Centrality-Betweenness-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
-# #Betweenness returns a 'communities' object
-qq = [round(i, 3) for i in pp.betweenness()]
-print(qq)
+# #iGraph
+pp = copy.deepcopy(y_ig_kite)
+# #NetworkX
+qq = copy.deepcopy(y_nx_kite)
 
-#cl = ig.Clustering(pp.vs()['group'])
-#print(cl)
-#pp.modularity(membership=cl)
-#ig.VertexClustering(pp, pp.vs["group"])
+# #iGraph: List of Betweenness for each node
+ss = [round(i, 3) for i in pp.betweenness()]
+print(ss)
 
-# #ForLater
+# #NetworkX: Dictionary of Betweenness
+tt = nx.betweenness_centrality(qq, normalized = False)
+# #NOTE: Only the Node Location of E & F has been interchanged, Value is NOT different
+[round(v, 3) for k, v in tt.items()]
+{k:round(v, 3) for k, v in tt.items()}
+
+if(False): nx.modularity_matrix(qq)
 
 ```
 
@@ -1048,28 +1157,39 @@ print(qq)
 
 ```{r 'P01-R-Centrality-Eigenvector-Kite', decorate=TRUE}
 bb <- r_kite
-# #List of Eigenvector and Eigenvalue Score
-ii <- eigen_centrality(bb) 
+# #Eigenvector and Eigenvalue Score
+ii <- eigen_centrality(bb, scale = FALSE)$vector |> round(3) #|> sort()
+jj <- centr_eigen(bb, scale = FALSE)$vector |> round(3) #|> sort()
+kk <- evcent(bb, scale = FALSE)$vector |> round(3) #|> sort()
+# #Spectrum might give values reversed during subsequent execution
+#ll <- spectrum(bb, which = list(pos = "LA"))$vectors |> round(3) |> as.vector() #|> sort() 
+# #Verify
+stopifnot(all(identical(unname(ii), jj), identical(ii, kk)))
 #
 # #Eigenvector of each Vertex
-ii$vector |> round(3)
+eigen_centrality(bb, scale = FALSE)$vector |> round(3) #|> sort()
+eigen_centrality(bb, scale = TRUE)$vector |> round(3) #|> sort()
 #
 # #Eigenvalue Score
-ii$value
+eigen_centrality(bb, scale = FALSE)$value
+
 ```
 
 ##### Python {.unlisted .unnumbered}
 
 ```{python 'P01-Y-Centrality-Eigenvector-Kite', decorate=TRUE}
-pp = copy.deepcopy(y_kite)
+# #iGraph
+pp = copy.deepcopy(y_ig_kite)
+# #NetworkX
+qq = copy.deepcopy(y_nx_kite)
 
-# #List of Eigenvector
-qq = [round(i, 3) for i in pp.eigenvector_centrality()]
-ss = dict(zip(pp.vs['name'], qq, strict = True))
-print(ss)
-for key, value in ss.items(): print(key + " : " + value.__str__())
+# #iGraph: List of Eigenvalues for each node
+[round(i, 3) for i in pp.eigenvector_centrality(scale = True)]
+[round(i, 3) for i in pp.eigenvector_centrality(scale = False)] #Match with NetworkX
 
-# #Eigenvalue Score - #ForLater
+# #NetworkX: Dictionary of Eigenvalues (No Normalization)
+tt = nx.eigenvector_centrality(qq)
+{k:round(v, 3) for k, v in tt.items()} 
 
 ```
 

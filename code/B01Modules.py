@@ -20,6 +20,9 @@ if ('pandas' not in sys.modules):
     import types
     import pyarrow
     import pyarrow.feather
+    import networkx as nx
+    import string
+    import operator
 else:
     print("Python Modules not loaded again.")
 

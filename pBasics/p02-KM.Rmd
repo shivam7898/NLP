@@ -9,6 +9,31 @@ sys.source(here::here("code", "A04PackagesPython.R"), envir = knitr::knit_global
 if(FALSE) knit_exit() #Evaluate only up to this chunk and complete the knit process
 ```
 
+## Kite
+
+```{r 'P02-R-Kite', decorate=TRUE, include=FALSE}
+bb <- make_graph("Krackhardt kite")
+V(bb)$name <- LETTERS[1:vcount(bb)]
+r_kite <- bb
+```
+
+```{python 'P02-Y-Kite', decorate=TRUE, include=FALSE}
+pp = ig.Graph.Famous("Krackhardt_Kite")
+pp.vs['name'] = list(string.ascii_uppercase[0:pp.vcount()])
+pp.vs['label'] = pp.vs['name']
+y_kite = copy.deepcopy(pp)
+
+```
+
+```{r 'P02-R-Kite-Print', decorate=TRUE}
+print(r_kite)
+```
+
+```{python 'P02-Y-Kite-Print', decorate=TRUE}
+print(y_kite)
+
+```
+
 ## KM Network
 
 \textcolor{pink}{Please import the "P01-KM-Week1.xlsx" and "P01-KM-Week4.xlsx"}
@@ -36,9 +61,63 @@ if(FALSE) lapply(p02r_km_1, summary)
 if(FALSE) lapply(p02r_km_4, summary)
 ```
 
+## Eigenvector Centrality vs. Degree, Betweenness, Closeness
+
+- NOTE: R (igraph) and Python (NetworkX) Eigenvalues match each other but not with NodeXL
+  - R & Python: $\{A, B, C, D, E\} = \{0.653, 0.354, 0.354, 0.500, 0.271\}$
+  - NodeXL: $\{A, B, C, D, E\} = \{0.562, 0.397, 0.397, 0.562, 0.233\}$
+  
+### Y Network
+
+```{r 'P02-R-Centralities-NetY', decorate=TRUE}
+bb <- graph_from_literal(E-D-A-B, A-C)
+tibble(ID = 1:vcount(bb), Nodes = V(bb)$name, Degree = degree(bb),
+       Closeness = round(closeness(bb, normalized = FALSE), 3),
+       Betweenness = betweenness(bb),
+       Eigenvalues = round(eigen_centrality(bb, scale = FALSE)$vector, 3))
+```
 
 
-## Validation {#val-p01 .unlisted .unnumbered .tabset .tabset-fade}
+```{python 'P02-Y-NetY', decorate=TRUE}
+# #Create NetworkX
+nx_g = nx.Graph()
+nx_g.add_nodes_from(list(string.ascii_uppercase[0:5]))
+nx_g.add_edges_from([('E', 'D'), ('D', 'A'), ('A', 'B'), ('A', 'C')])
+
+# #Convert NetworkX to iGraph
+ig_g = ig.Graph.TupleList(nx_g.edges())
+
+print(nx_g)
+print(nx_g.nodes)
+print(nx_g.edges)
+
+nn_nod = dict(zip(nx_g.nodes, nx_g.nodes, strict = True))
+ii_dgr = dict(nx_g.degree())
+jj = nx.closeness_centrality(nx_g)
+jj_clo = {k:round(v, 3) for k, v in jj.items()}
+kk = [round(i, 3) for i in ig_g.closeness(normalized = False)]
+kk_clo = dict(zip(ig_g.vs['name'], kk, strict = True))
+ll_bet = nx.betweenness_centrality(nx_g, normalized = False) 
+mm = nx.eigenvector_centrality(nx_g)
+mm_eig = {k:round(v, 3) for k, v in mm.items()}
+#
+oo = pd.concat( [pd.Series(x) for x in (nn_nod, ii_dgr, jj_clo, kk_clo, ll_bet, mm_eig)], axis=1)
+oo.columns = ("Nodes", "Degree", "Closeness_N", "Closeness", "Betweenness", "Eigenvector")
+print(oo)
+
+```
+
+### Kite
+
+```{r 'P02-R-Centralities-Kite', decorate=TRUE}
+bb <- r_kite
+tibble(ID = 1:vcount(bb), Nodes = V(bb)$name, Degree = degree(bb),
+       Closeness = round(closeness(bb, normalized = FALSE), 3),
+       Betweenness = betweenness(bb),
+       Eigenvalues = round(eigen_centrality(bb, scale = FALSE)$vector, 3))
+```
+
+## Validation {#val-p02 .unlisted .unnumbered .tabset .tabset-fade}
 
 ```{r 'P02-R-Cleanup', decorate=TRUE, include=FALSE, cache=FALSE}
 if(FALSE) f_rmExist(aa)

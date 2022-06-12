@@ -45,6 +45,8 @@ if (!("conflicted" %in% (.packages()))) {
   #invisible(suppressMessages(conflict_prefer("weather", "rattle")))  
   ## # stats::chisq.test | janitor::chisq.test
   #invisible(suppressMessages(conflict_prefer("chisq.test", "stats")))  
+  # # igraph::spectrum | stats::spectrum
+  invisible(suppressMessages(conflict_prefer("spectrum", "igraph")))  
   # #Cleanup
   rm(pkg)
   # #Provide the path to the specific Python binary.
