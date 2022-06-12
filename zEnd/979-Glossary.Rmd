@@ -2,7 +2,7 @@
 
 ## THEOREMS {.unlisted .unnumbered}
 
-```{r '979-Theorems', comment="", echo=FALSE, results='asis', cache=FALSE}
+```{r '979-R-Theorems', comment="", echo=FALSE, results='asis', cache=FALSE}
 # #New items will NOT be added immediately if cache=TRUE
 for(x in knitr::all_labels(engine == 'theorem')){
 # # Use (x, "\n\n>") in place of (x, "\n\n") to show definitions as Quotes
@@ -12,7 +12,7 @@ for(x in knitr::all_labels(engine == 'theorem')){
 
 ## DEFINITIONS {.unlisted .unnumbered}
 
-```{r '979-Definitions', comment="", echo=FALSE, results='asis', cache=FALSE}
+```{r '979-R-Definitions', comment="", echo=FALSE, results='asis', cache=FALSE}
 # #New items will NOT be added immediately if cache=TRUE
 for(x in knitr::all_labels(engine == 'definition')){
 # # Use (x, "\n\n>") in place of (x, "\n\n") to show definitions as Quotes
@@ -22,7 +22,7 @@ for(x in knitr::all_labels(engine == 'definition')){
 
 ## ERRORS {.unlisted .unnumbered}
 
-```{r '979-Errors', comment="", echo=FALSE, results='asis', cache=FALSE}
+```{r '979-R-Errors', comment="", echo=FALSE, results='asis', cache=FALSE}
 # #New items will NOT be added immediately if cache=TRUE
 for(x in knitr::all_labels(engine == 'conjecture')){
 # # Use (x, "\n\n>") in place of (x, "\n\n") to show definitions as Quotes
@@ -33,7 +33,7 @@ for(x in knitr::all_labels(engine == 'conjecture')){
 <!--
 ## Validation {.unlisted .unnumbered}
 
-```{r 'l979-Validation', cache=FALSE}
+```{r 'l979-R-Validation', cache=FALSE}
 # #Summarised Packages and Objects
 rm(x)
 f_()

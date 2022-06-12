@@ -6,6 +6,7 @@ sys.source(here::here("code", "A01Packages.R"), envir = knitr::knit_global())
 sys.source(here::here("code", "A02AllUDF.R"), envir = knitr::knit_global())
 reticulate::source_python(here::here("code", "B01Modules.py"), convert = FALSE)
 sys.source(here::here("code", "A04PackagesPython.R"), envir = knitr::knit_global())
+if(FALSE) knit_exit() #Evaluate only up to this chunk and complete the knit process
 ```
 
 
